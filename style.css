@@ -284,6 +284,22 @@ textarea{
     width:100%;
     ...
 }
+
+.pdf-btn{
+    background:#8B5A2B;   /* Brown */
+}
+
+.pdf-btn:hover{
+    background:#6f4518;
+}
+
+.doc-btn{
+    background:#ec4899;   /* Pink */
+}
+
+.doc-btn:hover{
+    background:#db2777;
+}
 /* =========================
 TABLE
 ========================= */
