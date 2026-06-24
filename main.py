@@ -792,13 +792,19 @@ def reset_session():
 @app.get("/total-uploads")
 def total_uploads():
 
-    with open(DB_FILE,"r") as f:
-        data=json.load(f)
+    with open(DB_FILE, "r") as f:
+        candidates = json.load(f)
+
+    with open(STATS_FILE, "r") as f:
+        stats = json.load(f)
 
     return {
 
-        "total_uploads": len(data),
-        "total_candidates": len(data)
+        "total_uploads":
+        stats["total_uploads"],
+
+        "total_candidates":
+        len(candidates)
 
     }
    
