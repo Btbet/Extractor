@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+AI CV Screening Dashboard
+</title>
+
+<link
+rel="stylesheet"
+href="/static/style.css"
+>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+AI CV Screening Platform
+</h1>
+
+<p>
+Upload • Match • Search • Rank Candidates
+</p>
+
+</header>
+
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+
+<h3>Total Uploads</h3>
+
+<h1 id="uploads">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Total Candidates</h3>
+
+<h1 id="candidates">
+0
+</h1>
+
+</div>
+
+<h3>Live Status</h3>
+
+<div style="display:flex;align-items:center;gap:10px;">
+    <div id="liveIndicator"></div>
+    <h1 id="apiStatus">Checking...</h1>
+</div>
+
+<div class="section">
+
+<h2>
+Upload Single CV
+</h2>
+
+<input
+type="file"
+id="singleCV"
+accept=".pdf"
+>
+
+<button onclick="uploadSingle()">
+Upload CV
+</button>
+
+<div id="singleResult"></div>
+
+</div>
+
+
+
+
+<div class="section">
+
+<h2>
+Upload Multiple CVs
+</h2>
+
+<input
+type="file"
+id="multipleCV"
+accept=".pdf"
+multiple
+>
+
+<button
+class="action-btn"
+onclick="addCV()"
+>
++ Add CV
+</button>
+
+<div
+id="selectedFiles"
+style="margin-top:15px"
+></div>
+
+<button
+class="action-btn"
+onclick="uploadMultiple()"
+>
+Upload Files
+</button>
+
+</div>
+
+
+
+
+<div class="section">
+
+<h2>
+Search Candidates
+</h2>
+
+<input
+type="text"
+id="searchText"
+placeholder="Search by name or skill"
+>
+
+<button onclick="searchCandidate()">
+Search
+</button>
+
+<button onclick="clearSearch()">
+Clear Results
+</button>
+
+</div>
+
+
+
+
+<div class="work">
+
+<details>
+
+<summary>
+
+<h2>
+Job Matching ▼
+</h2>
+
+</summary>
+
+<textarea
+id="jobDescription"
+rows="6"
+placeholder="Paste Job Description"
+></textarea>
+
+<button
+class="match-btn"
+onclick="matchJob()"
+>
+Match Candidates
+</button>
+
+<button
+class="clear-btn"
+onclick="clearMatch()"
+>
+Clear Results
+</button>
+
+<div id="matchResults"></div>
+
+</details>
+
+</div>
+
+
+
+<!-- Hidden until Match button clicked -->
+
+<div
+id="downloadSection"
+style="display:none"
+>
+
+<button onclick="downloadResults('pdf')">
+Download PDF
+</button>
+
+<button onclick="downloadResults('doc')">
+Download DOC
+</button>
+</div>
+
+
+<div class="buttonBar">
+
+<button onclick="loadCandidates()">
+Load Candidates
+</button>
+
+<button onclick="window.location='/export-csv'">
+Download CSV
+</button>
+
+<button onclick="window.location='/export-pdf'">
+Export PDF
+</button>
+
+<button onclick="resetSession()">
+Reset Session
+</button>
+
+</div>
+
+<div class="tableContainer">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>Name</th>
+<th>Email</th>
+<th>Skills</th>
+<th>Education</th>
+<th>Experience</th>
+
+</tr>
+
+</thead>
+
+<tbody id="candidateTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+
+</div>
+
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
