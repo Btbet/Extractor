@@ -69,75 +69,78 @@ async def extract_cv(
     file: UploadFile = File(...)
 ):
 
-    try:
+ try:
 
-        pdf_bytes = await file.read()
+    pdf_bytes = await file.read()
 
-        reader = PdfReader(
-            BytesIO(pdf_bytes)
+    reader = PdfReader(
+        BytesIO(pdf_bytes)
+    )
+
+    text = ""
+
+    for page in reader.pages:
+
+        extracted = page.extract_text()
+
+        if extracted:
+
+            text += extracted + "\n"
+
+    candidate = extract_cv_data(text)
+
+    cv_hash = hashlib.sha256(
+        text.encode("utf-8")
+    ).hexdigest()
+
+    candidate["cv_hash"] = cv_hash
+
+    # Count every upload
+    with open(STATS_FILE, "r") as f:
+        stats = json.load(f)
+
+    stats["total_uploads"] += 1
+
+    with open(STATS_FILE, "w") as f:
+        json.dump(
+            stats,
+            f,
+            indent=4
         )
 
-        text = ""
+    # Load candidates
+    with open(DB_FILE, "r") as f:
+        data = json.load(f)
 
-        for page in reader.pages:
+    duplicate = False
 
-            extracted = page.extract_text()
+    for c in data:
 
-            if extracted:
+        if (
 
-                text += extracted + "\n"
-
-        candidate = extract_cv_data(text)
-cv_hash = hashlib.sha256(
-    text.encode("utf-8")
-).hexdigest()
-
-candidate["cv_hash"] = cv_hash
-        # Count every upload
-        with open(STATS_FILE, "r") as f:
-            stats = json.load(f)
-
-        stats["total_uploads"] += 1
-
-        with open(STATS_FILE, "w") as f:
-            json.dump(
-                stats,
-                f,
-                indent=4
+            (
+                c.get("email")
+                and candidate.get("email")
+                and c["email"].lower()
+                == candidate["email"].lower()
             )
 
-        # Load candidates
-        with open(DB_FILE, "r") as f:
-            data = json.load(f)
+            or
 
-        duplicate = False
+            (
+                c.get("cv_hash")
+                and candidate.get("cv_hash")
+                and c["cv_hash"]
+                == candidate["cv_hash"]
+            )
 
-        for c in data:
+        ):
 
-            if (
+            c.update(candidate)
 
-    (
-        c.get("email")
-        and candidate.get("email")
-        and c["email"].lower()
-        == candidate["email"].lower()
-    )
+            duplicate = True
 
-    or
-
-    (
-        c.get("cv_hash")
-        and candidate.get("cv_hash")
-        and c["cv_hash"]
-        == candidate["cv_hash"]
-    )
-
-):
-
-                c.update(candidate)
-
-                duplicate = True
-                break
+            break
 
         if not duplicate:
 
