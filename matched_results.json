@@ -1,0 +1,225 @@
+[
+    {
+        "candidate_name": "Bethel Ogamde Ogabo",
+        "email": "ogabety20@gmail.com",
+        "phone": "8160817567",
+        "skills": [
+            "Analyze complex datasets to provide actionable business insights.",
+            "Develop automation scripts and data pipelines in Python.",
+            "Build predictive models to optimize decision-making and operations.",
+            "Create practical exercises and projects to strengthen AI understanding.",
+            "Identi\ufb01ed patterns, trends, and anomalies in large datasets",
+            "Python",
+            "Machine Learning",
+            "Data Science",
+            "Data Analytics",
+            "Data Analysis",
+            "AI"
+        ],
+        "education": [
+            "Computer Science",
+            "Data Science",
+            "Machine Learning"
+        ],
+        "years_experience": 1,
+        "score": 75,
+        "id": 1,
+        "job_match_score": 100,
+        "matched_skills": [
+            "python"
+        ],
+        "missing_skills": [],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Bethel Ogamde Ogabo has 1 years experience with skills in Analyze complex datasets to provide actionable business insights., Develop automation scripts and data pipelines in Python., Build predictive models to optimize decision-making and operations., Create practical exercises and projects to strengthen AI understanding., Identi\ufb01ed patterns, trends, and anomalies in large datasets."
+    },
+    {
+        "candidate_name": "Emma Johnson",
+        "email": "emma.johnson@example.com",
+        "phone": "+44 7700 123456",
+        "skills": [
+            "Python, JavaScript, SQL, Cloud Computing",
+            "Python",
+            "JavaScript",
+            "SQL",
+            "Cloud Computing"
+        ],
+        "education": [
+            "Computer Science",
+            "BSc"
+        ],
+        "years_experience": 6,
+        "score": 90,
+        "id": 3,
+        "job_match_score": 100,
+        "matched_skills": [
+            "python"
+        ],
+        "missing_skills": [],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Emma Johnson has 6 years experience with skills in Python, JavaScript, SQL, Cloud Computing, Python, JavaScript, SQL, Cloud Computing."
+    },
+    {
+        "candidate_name": "Michael Carter",
+        "email": "michael.carter@example.com",
+        "phone": "+44 7700 234567",
+        "skills": [
+            "Financial Reporting, Excel, Tax Planning, Auditing",
+            "Excel",
+            "Accounting"
+        ],
+        "education": [
+            "Accounting",
+            "BSc"
+        ],
+        "years_experience": 7,
+        "score": 80,
+        "id": 2,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Michael Carter has 7 years experience with skills in Financial Reporting, Excel, Tax Planning, Auditing, Excel, Accounting."
+    },
+    {
+        "candidate_name": "Sophia Williams",
+        "email": "sophia.williams@example.com",
+        "phone": "+44 7700 345678",
+        "skills": [
+            "Lesson Planning, Classroom Management, Communication",
+            "Communication",
+            "Teaching"
+        ],
+        "education": [],
+        "years_experience": 7,
+        "score": 60,
+        "id": 4,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Sophia Williams has 7 years experience with skills in Lesson Planning, Classroom Management, Communication, Communication, Teaching."
+    },
+    {
+        "candidate_name": "Daniel Brown",
+        "email": "daniel.brown@example.com",
+        "phone": "+44 7700 456789",
+        "skills": [
+            "CRM, Negotiation, Leadership, Business Development",
+            "Leadership",
+            "CRM",
+            "Business Development"
+        ],
+        "education": [],
+        "years_experience": 8,
+        "score": 70,
+        "id": 5,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Daniel Brown has 8 years experience with skills in CRM, Negotiation, Leadership, Business Development, Leadership, CRM, Business Development."
+    },
+    {
+        "candidate_name": "Olivia Taylor",
+        "email": "olivia.taylor@example.com",
+        "phone": "+44 7700 567890",
+        "skills": [
+            "Adobe Photoshop, Illustrator, Branding, UI Design"
+        ],
+        "education": [],
+        "years_experience": 6,
+        "score": 40,
+        "id": 6,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Olivia Taylor has 6 years experience with skills in Adobe Photoshop, Illustrator, Branding, UI Design."
+    },
+    {
+        "candidate_name": "Service Year Shared in",
+        "email": null,
+        "phone": null,
+        "skills": [],
+        "education": [],
+        "years_experience": 1,
+        "score": 5,
+        "id": 7,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Service Year Shared in has 1 years experience with skills in ."
+    },
+    {
+        "candidate_name": "Service Year Shared in",
+        "email": null,
+        "phone": null,
+        "skills": [],
+        "education": [],
+        "years_experience": 1,
+        "score": 5,
+        "id": 8,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Service Year Shared in has 1 years experience with skills in ."
+    },
+    {
+        "candidate_name": "DigitalPlat Domain",
+        "email": "stackbuilderdavemindx@gmail.com",
+        "phone": null,
+        "skills": [],
+        "education": [],
+        "years_experience": 1,
+        "score": 5,
+        "id": 9,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "DigitalPlat Domain has 1 years experience with skills in ."
+    },
+    {
+        "candidate_name": "Unknown",
+        "email": null,
+        "phone": null,
+        "skills": [],
+        "education": [],
+        "years_experience": 0,
+        "score": 0,
+        "id": 10,
+        "job_match_score": 0,
+        "matched_skills": [],
+        "missing_skills": [
+            "python"
+        ],
+        "related_skills": [],
+        "comments": [],
+        "summary": "Unknown has 0 years experience with skills in ."
+    }
+]
