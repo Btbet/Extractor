@@ -15,22 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 let selectedCVs = [];
 
 let apiLive = false;
-function showMessage(targetId, message, color = "green") {
 
-    document.getElementById(targetId).innerHTML = `
-        <p style="
-            color:${color};
-            font-weight:bold;
-            margin-top:10px;
-        ">
-            ${message}
-        </p>
-    `;
-
-    setTimeout(() => {
-        document.getElementById(targetId).innerHTML = "";
-    }, 3000);
-}
 const liveColors = [
     "#22c55e",
     "#2563eb",
@@ -230,77 +215,103 @@ async function uploadSingle(){
     }
 }
 
+
 async function uploadMultiple(){
 
-if(
-selectedCVs.length===0
-){
+    if(selectedCVs.length===0){
 
-alert(
-"No files selected"
-);
+        document.getElementById(
+            "selectedFiles"
+        ).innerHTML = `
+        <p style="
+            color:red;
+            font-weight:bold;
+            padding:10px;
+        ">
+        ⚠ No files selected
+        </p>
+        `;
 
-return;
+        return;
+    }
 
+    let form =
+        new FormData();
+
+    selectedCVs.forEach(file => {
+
+        form.append(
+            "files",
+            file
+        );
+
+    });
+
+    try{
+
+        let response =
+            await fetch(
+                "/upload-multiple",
+                {
+                    method:"POST",
+                    body:form
+                }
+            );
+
+        let data =
+            await response.json();
+
+        document.getElementById(
+            "selectedFiles"
+        ).innerHTML = `
+        <p style="
+            color:green;
+            font-weight:bold;
+            padding:10px;
+        ">
+        ✅ ${data.count} CV(s) uploaded successfully
+        </p>
+        `;
+
+        // Clear stored files
+        selectedCVs = [];
+
+        // Clear file input
+        document.getElementById(
+            "multipleCV"
+        ).value = "";
+
+        loadStats();
+        loadCandidates();
+
+        // Remove success message after 3 seconds
+        setTimeout(() => {
+
+            document.getElementById(
+                "selectedFiles"
+            ).innerHTML = "";
+
+        }, 3000);
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        document.getElementById(
+            "selectedFiles"
+        ).innerHTML = `
+        <p style="
+            color:red;
+            font-weight:bold;
+            padding:10px;
+        ">
+        ❌ Upload Failed
+        </p>
+        `;
+    }
 }
-
-let form=
-new FormData();
-
-selectedCVs.forEach(
-
-file=>{
-
-form.append(
-"files",
-file
-);
-
-}
-
-);
-
-try{
-
-let response=
-await fetch(
-"/upload-multiple",
-{
-method:"POST",
-body:form
-}
-);
-
-let data=
-await response.json();
-
-alert(
-`${data.count} uploaded`
-);
-
-selectedCVs=[];
-
-showSelectedFiles();
-
-loadStats();
-
-loadCandidates();
-
-}
-
-catch(err){
-
-console.log(err);
-
-alert(
-"Upload Failed"
-);
-
-}
-
-}
-
-
 
 async function loadCandidates(){
 
