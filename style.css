@@ -21,26 +21,37 @@ HEADER / HERO
 ========================= */
 /* Header Background Image */
 header{
+    background:url("cv.png") center center/cover no-repeat;
+    position:relative;
+    min-height:300px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
 header::before{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.45);
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.7); /* darker overlay */
 }
 
 .hero{
     position:relative;
     z-index:1;
+    text-align:center;
     max-width:900px;
-    padding:25px;
-    background:rgba(0,0,0,0.45);
-    border-radius:15px;
-    backdrop-filter:blur(5px);
+    padding:20px;
 }
-    .tagline{
+
+.hero h1{
+    font-size:42px;
+    color:#fff;
+    font-weight:700;
+    text-shadow:0 3px 10px rgba(0,0,0,0.9);
+}
+
+.tagline{
     font-size:24px;
     color:#93c5fd;
     font-weight:600;
