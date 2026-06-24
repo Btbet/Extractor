@@ -141,7 +141,6 @@ async def extract_cv(
 
         break
 
-
 if not duplicate:
 
     candidate["id"] = len(data) + 1
