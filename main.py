@@ -8,6 +8,7 @@ from pypdf import PdfReader
 from io import BytesIO
 import json
 import os
+import hashlib
 from docx import Document
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib import styles
