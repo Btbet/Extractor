@@ -234,6 +234,56 @@ background:#8b5a2b;
 background:#6f4518;
 }
 
+
+.action-btn{
+    background:#8B4513;
+}
+
+.action-btn:hover{
+    background:#6F3510;
+}
+
+/* ADD THESE BELOW */
+
+.load-btn{
+    background:#2563eb;
+}
+
+.load-btn:hover{
+    background:#1d4ed8;
+}
+
+.csv-btn{
+    background:#10b981;
+}
+
+.csv-btn:hover{
+    background:#059669;
+}
+
+.pdf-btn{
+    background:#8b5cf6;
+}
+
+.pdf-btn:hover{
+    background:#7c3aed;
+}
+
+.reset-btn{
+    background:#dc2626;
+}
+
+.reset-btn:hover{
+    background:#b91c1c;
+}
+
+/* EXISTING CODE CONTINUES */
+
+input,
+textarea{
+    width:100%;
+    ...
+}
 /* =========================
 TABLE
 ========================= */
