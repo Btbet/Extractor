@@ -116,55 +116,57 @@ async def extract_cv(
 
     for c in data:
 
-        if (
+    if (
 
-            (
-                c.get("email")
-                and candidate.get("email")
-                and c["email"].lower()
-                == candidate["email"].lower()
-            )
+        (
+            c.get("email")
+            and candidate.get("email")
+            and c["email"].lower()
+            == candidate["email"].lower()
+        )
 
-            or
+        or
 
-            (
-                c.get("cv_hash")
-                and candidate.get("cv_hash")
-                and c["cv_hash"]
-                == candidate["cv_hash"]
-            )
+        (
+            c.get("cv_hash")
+            and candidate.get("cv_hash")
+            and c["cv_hash"]
+            == candidate["cv_hash"]
+        )
 
-        ):
+    ):
 
-            c.update(candidate)
+        c.update(candidate)
 
-            duplicate = True
+        duplicate = True
 
-            break
+        break
 
-        if not duplicate:
 
-            candidate["id"] = len(data) + 1
+if not duplicate:
 
-            data.append(candidate)
+    candidate["id"] = len(data) + 1
 
-        with open(DB_FILE, "w") as f:
+    data.append(candidate)
 
-            json.dump(
-                data,
-                f,
-                indent=4
-            )
 
-        return candidate
+with open(DB_FILE, "w") as f:
 
-    except Exception as e:
+    json.dump(
+        data,
+        f,
+        indent=4
+    )
 
-        print(f"Upload error: {e}")
+return candidate
 
-        return {
-            "error": "Invalid or corrupted PDF"
-        }
+except Exception as e:
+
+    print(f"Upload error: {e}")
+
+    return {
+        "error": "Invalid or corrupted PDF"
+    }
 
 @app.post("/upload-multiple")
 async def upload_multiple(
