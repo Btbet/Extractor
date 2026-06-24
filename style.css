@@ -1,4 +1,7 @@
-<style>
+/* =========================
+GLOBAL
+========================= */
+
 *{
 margin:0;
 padding:0;
@@ -9,127 +12,12 @@ font-family:Arial,sans-serif;
 body{
 background:#f4f6f9;
 overflow-x:hidden;
+color:#111827;
 }
 
-#apiStatus{
-    font-weight:bold;
-    transition:all 0.4s ease;
-    text-shadow:0 0 10px currentColor;
-}
-#liveIndicator{
-    width:25px;
-    height:25px;
-    border-radius:50%;
-    background:#22c55e;
-    display:none;
-    transition:all .8s linear;
-}
-
-.live-green{
-    background:green;
-}
-
-.live-blue{
-    background:#2563eb;
-}
-
-.live-yellow{
-    background:#facc15;
-}
-
-.hero{
-    text-align:center;
-    padding:50px 20px;
-    margin-bottom:30px;
-}
-
-.hero h1{
-    font-size:42px;
-    margin-bottom:10px;
-    color:#ffffff;
-}
-
-.tagline{
-    font-size:24px;
-    font-weight:600;
-    color:#60a5fa;
-    margin-bottom:15px;
-}
-
-.description{
-    max-width:800px;
-    margin:auto;
-    color:#9ca3af;
-    line-height:1.8;
-    font-size:18px;
-}
-
-/* Footer */
-
-.footer{
-    background:#111827;
-    color:#e5e7eb;
-    margin-top:60px;
-    padding:40px 20px 15px;
-    border-top:1px solid #374151;
-}
-
-.footer-content{
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:30px;
-    max-width:1200px;
-    margin:auto;
-}
-
-.footer-content h3,
-.footer-content h4{
-    color:#60a5fa;
-    margin-bottom:10px;
-}
-
-.footer-content p,
-.footer-content li{
-    color:#9ca3af;
-    line-height:1.8;
-}
-
-.footer-content ul{
-    list-style:none;
-    padding:0;
-}
-
-.footer-bottom{
-    text-align:center;
-    margin-top:30px;
-    padding-top:15px;
-    border-top:1px solid #374151;
-    color:#6b7280;
-    font-size:14px;
-}
-
-/* Mobile Responsive */
-
-@media(max-width:768px){
-
-    .hero h1{
-        font-size:32px;
-    }
-
-    .tagline{
-        font-size:20px;
-    }
-
-    .description{
-        font-size:16px;
-    }
-
-    .footer-content{
-        flex-direction:column;
-        text-align:center;
-    }
-}
+/* =========================
+HEADER / HERO
+========================= */
 
 header{
 background:linear-gradient(
@@ -138,14 +26,41 @@ background:linear-gradient(
 #2563eb
 );
 color:white;
-padding:60px;
 text-align:center;
+padding:25px 20px;
 }
 
-header h1{
-font-size:42px;
-margin-bottom:10px;
+.hero{
+text-align:center;
+max-width:1000px;
+margin:auto;
+padding:15px 10px;
 }
+
+.hero h1{
+font-size:42px;
+margin-bottom:12px;
+color:#ffffff;
+}
+
+.tagline{
+font-size:24px;
+font-weight:600;
+color:#93c5fd;
+margin-bottom:12px;
+}
+
+.description{
+max-width:800px;
+margin:auto;
+color:#d1d5db;
+line-height:1.7;
+font-size:16px;
+}
+
+/* =========================
+CONTAINER
+========================= */
 
 .container{
 width:100%;
@@ -154,87 +69,104 @@ margin:auto;
 padding:20px;
 }
 
+/* =========================
+DASHBOARD CARDS
+========================= */
+
 .cards{
 display:grid;
 grid-template-columns:
 repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
-margin-bottom:30px;
-width:100%;
+margin-bottom:25px;
 }
 
 .card{
 background:white;
-padding:25px;
+padding:20px;
 border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
-width:100%;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
+
+.card h3{
+margin-bottom:15px;
+}
+
+.card h1{
+font-size:36px;
+}
+
+/* =========================
+LIVE STATUS
+========================= */
+
+#apiStatus{
+font-weight:bold;
+transition:all .4s ease;
+text-shadow:0 0 10px currentColor;
+}
+
+#liveIndicator{
+width:20px;
+height:20px;
+border-radius:50%;
+background:#22c55e;
+display:none;
+transition:all .8s linear;
+}
+
+.live-green{
+background:#22c55e;
+}
+
+.live-blue{
+background:#2563eb;
+}
+
+.live-yellow{
+background:#facc15;
+}
+
+/* =========================
+PANELS
+========================= */
 
 .section{
 background:white;
 padding:25px;
 border-radius:15px;
-margin-bottom:30px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
-width:100%;
-overflow:hidden;
+margin-bottom:20px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
-.download-btn{
-background:#8B5A2B;
+.section h2{
+margin-bottom:15px;
 }
 
-.download-btn:hover{
-background:#6F4518;
-}
+/* =========================
+JOB MATCHING
+========================= */
 
 .work{
-background:#F59E0B;
+background:#f59e0b;
 width:100%;
 padding:20px;
 border-radius:15px;
-margin-bottom:30px;
+margin-bottom:20px;
 }
 
-.buttonBar{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-top:15px;
-}
-
-button{
-background:#10B981;
-border:none;
-padding:12px 18px;
-color:white;
-border-radius:8px;
+.work summary{
 cursor:pointer;
-margin-top:10px;
-margin-right:10px;
+list-style:none;
 }
 
-button:hover{
-opacity:.8;
+.work h2{
+margin:0;
 }
 
-.clear-btn{
-background:#dc2626;
-font-weight:bold;
-}
-
-.clear-btn:hover{
-background:#b91c1c;
-}
-
-.action-btn{
-background:#8B4513;
-}
-
-.action-btn:hover{
-background:#6F3510;
-}
+/* =========================
+FORM ELEMENTS
+========================= */
 
 input,
 textarea{
@@ -243,24 +175,88 @@ padding:12px;
 margin-top:10px;
 margin-bottom:10px;
 border-radius:8px;
-border:1px solid #ddd;
+border:1px solid #d1d5db;
+outline:none;
 }
+
+input:focus,
+textarea:focus{
+border-color:#2563eb;
+}
+
+/* =========================
+BUTTONS
+========================= */
+
+.buttonBar{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin:20px 0;
+}
+
+button{
+background:#10b981;
+border:none;
+padding:12px 18px;
+color:white;
+border-radius:8px;
+cursor:pointer;
+transition:.25s;
+}
+
+button:hover{
+opacity:.9;
+transform:translateY(-1px);
+}
+
+.action-btn{
+background:#8b4513;
+}
+
+.action-btn:hover{
+background:#6f3510;
+}
+
+.clear-btn{
+background:#dc2626;
+}
+
+.clear-btn:hover{
+background:#b91c1c;
+}
+
+.download-btn{
+background:#8b5a2b;
+}
+
+.download-btn:hover{
+background:#6f4518;
+}
+
+/* =========================
+TABLE
+========================= */
 
 .tableContainer{
 overflow-x:auto;
+background:white;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
 table{
 width:100%;
 min-width:700px;
 border-collapse:collapse;
-margin-top:20px;
 }
 
-th,td{
+th,
+td{
 padding:15px;
-border-bottom:1px solid #ddd;
+border-bottom:1px solid #e5e7eb;
 text-align:left;
+vertical-align:top;
 }
 
 th{
@@ -268,18 +264,31 @@ background:#2563eb;
 color:white;
 }
 
+tr:hover{
+background:#f8fafc;
+}
+
+/* =========================
+SKILLS
+========================= */
+
 .skill{
 display:inline-block;
-padding:5px 10px;
+padding:4px 10px;
 border-radius:20px;
 background:#dbeafe;
 margin:2px;
+font-size:13px;
 }
 
 .search-result-card{
-background:#FFC107;
+background:#ffc107;
 color:black;
 }
+
+/* =========================
+MATCH RESULTS
+========================= */
 
 #matchResults{
 display:grid;
@@ -289,30 +298,97 @@ gap:15px;
 margin-top:20px;
 }
 
+/* =========================
+FOOTER
+========================= */
+
+.footer{
+background:#111827;
+color:#e5e7eb;
+margin-top:40px;
+padding:25px 20px 10px;
+}
+
+.footer-content{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:20px;
+max-width:1200px;
+margin:auto;
+}
+
+.footer-content h3,
+.footer-content h4{
+color:#60a5fa;
+margin-bottom:10px;
+}
+
+.footer-content p,
+.footer-content li{
+color:#9ca3af;
+line-height:1.5;
+}
+
+.footer-content ul{
+list-style:none;
+}
+
+.footer-bottom{
+text-align:center;
+margin-top:20px;
+padding-top:15px;
+border-top:1px solid #374151;
+color:#6b7280;
+font-size:14px;
+}
+
+/* =========================
+MOBILE
+========================= */
+
 @media(max-width:768px){
 
 header{
-padding:35px 15px;
+    padding:20px 15px;
 }
 
-header h1{
-font-size:28px;
+.hero{
+    padding:10px;
 }
 
-button{
-width:100%;
-margin-right:0;
+.hero h1{
+    font-size:30px;
 }
 
-.buttonBar{
-flex-direction:column;
+.tagline{
+    font-size:18px;
+}
+
+.description{
+    font-size:14px;
+    line-height:1.6;
 }
 
 .cards{
-grid-template-columns:1fr;
+    grid-template-columns:1fr;
+}
+
+.buttonBar{
+    flex-direction:column;
+}
+
+button{
+    width:100%;
+}
+
+.footer-content{
+    flex-direction:column;
+    text-align:center;
 }
 
 table{
-min-width:600px;
+    min-width:600px;
 }
-</style>
+
+}
