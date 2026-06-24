@@ -69,101 +69,105 @@ async def extract_cv(
     file: UploadFile = File(...)
 ):
 
- try:
+    try:
 
-    pdf_bytes = await file.read()
+        pdf_bytes = await file.read()
 
-    reader = PdfReader(
-        BytesIO(pdf_bytes)
-    )
-
-    text = ""
-
-    for page in reader.pages:
-
-        extracted = page.extract_text()
-
-        if extracted:
-
-            text += extracted + "\n"
-
-    candidate = extract_cv_data(text)
-
-    cv_hash = hashlib.sha256(
-        text.encode("utf-8")
-    ).hexdigest()
-
-    candidate["cv_hash"] = cv_hash
-
-    with open(STATS_FILE, "r") as f:
-        stats = json.load(f)
-
-    stats["total_uploads"] += 1
-
-    with open(STATS_FILE, "w") as f:
-        json.dump(
-            stats,
-            f,
-            indent=4
+        reader = PdfReader(
+            BytesIO(pdf_bytes)
         )
 
-    # Load candidates
-    with open(DB_FILE, "r") as f:
-        data = json.load(f)
+        text = ""
 
-    duplicate = False
+        for page in reader.pages:
 
-    for c in data:
+            extracted = page.extract_text()
 
-        if (
+            if extracted:
 
-            (
-                c.get("email")
-                and candidate.get("email")
-                and c["email"].lower()
-                == candidate["email"].lower()
+                text += extracted + "\n"
+
+        candidate = extract_cv_data(text)
+
+        cv_hash = hashlib.sha256(
+            text.encode("utf-8")
+        ).hexdigest()
+
+        candidate["cv_hash"] = cv_hash
+
+        # Count every upload
+        with open(STATS_FILE, "r") as f:
+
+            stats = json.load(f)
+
+        stats["total_uploads"] += 1
+
+        with open(STATS_FILE, "w") as f:
+
+            json.dump(
+                stats,
+                f,
+                indent=4
             )
 
-            or
+        # Load candidates
+        with open(DB_FILE, "r") as f:
 
-            (
-                c.get("cv_hash")
-                and candidate.get("cv_hash")
-                and c["cv_hash"]
-                == candidate["cv_hash"]
+            data = json.load(f)
+
+        duplicate = False
+
+        for c in data:
+
+            if (
+
+                (
+                    c.get("email")
+                    and candidate.get("email")
+                    and c["email"].lower()
+                    == candidate["email"].lower()
+                )
+
+                or
+
+                (
+                    c.get("cv_hash")
+                    and candidate.get("cv_hash")
+                    and c["cv_hash"]
+                    == candidate["cv_hash"]
+                )
+
+            ):
+
+                c.update(candidate)
+
+                duplicate = True
+
+                break
+
+        if not duplicate:
+
+            candidate["id"] = len(data) + 1
+
+            data.append(candidate)
+
+        with open(DB_FILE, "w") as f:
+
+            json.dump(
+                data,
+                f,
+                indent=4
             )
 
-        ):
+        return candidate
 
-            c.update(candidate)
+    except Exception as e:
 
-            duplicate = True
+        print(f"Upload error: {e}")
 
-            break
-
-    if not duplicate:
-
-        candidate["id"] = len(data) + 1
-
-        data.append(candidate)
-
-    with open(DB_FILE, "w") as f:
-
-        json.dump(
-            data,
-            f,
-            indent=4
-        )
-
-    return candidate
-
-except Exception as e:
-
-    print(f"Upload error: {e}")
-
-    return {
-        "error": "Invalid or corrupted PDF"
-    }
+        return {
+            "error": "Invalid or corrupted PDF"
+                    }
 
 @app.post("/upload-multiple")
 async def upload_multiple(
