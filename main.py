@@ -88,6 +88,20 @@ async def extract_cv(
 
         candidate = extract_cv_data(text)
 
+        # Count every upload
+        with open(STATS_FILE, "r") as f:
+            stats = json.load(f)
+
+        stats["total_uploads"] += 1
+
+        with open(STATS_FILE, "w") as f:
+            json.dump(
+                stats,
+                f,
+                indent=4
+            )
+
+        # Load candidates
         with open(DB_FILE, "r") as f:
             data = json.load(f)
 
