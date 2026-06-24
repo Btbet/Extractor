@@ -144,59 +144,70 @@ async def extract_cv(
             "error": "Invalid or corrupted PDF"
         }
 
-
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
 ):
 
-    with open(DB_FILE,"r") as f:
-        data=json.load(f)
+    with open(DB_FILE, "r") as f:
+        data = json.load(f)
 
-    uploaded=[]
-    skipped=[]
+    uploaded = []
+    skipped = []
 
     for file in files:
 
         try:
 
-            pdf_bytes=await file.read()
+            pdf_bytes = await file.read()
 
-            reader=PdfReader(
+            reader = PdfReader(
                 BytesIO(pdf_bytes)
             )
 
-            text=""
+            text = ""
 
             for page in reader.pages:
 
-                extracted=page.extract_text()
+                extracted = page.extract_text()
 
                 if extracted:
-                    text += extracted+"\n"
 
-            candidate=extract_cv_data(text)
+                    text += extracted + "\n"
 
-            duplicate=False
+            candidate = extract_cv_data(text)
+
+            # Count every uploaded file
+            with open(STATS_FILE, "r") as f:
+                stats = json.load(f)
+
+            stats["total_uploads"] += 1
+
+            with open(STATS_FILE, "w") as f:
+                json.dump(
+                    stats,
+                    f,
+                    indent=4
+                )
+
+            duplicate = False
 
             for c in data:
 
-                if(
+                if (
                     c.get("email")
-                    and
-                    candidate.get("email")
-                    and
-                    c["email"]==candidate["email"]
+                    and candidate.get("email")
+                    and c["email"] == candidate["email"]
                 ):
 
                     c.update(candidate)
 
-                    duplicate=True
+                    duplicate = True
                     break
 
             if not duplicate:
 
-                candidate["id"]=len(data)+1
+                candidate["id"] = len(data) + 1
 
                 data.append(candidate)
 
@@ -214,7 +225,7 @@ async def upload_multiple(
                 file.filename
             )
 
-    with open(DB_FILE,"w") as f:
+    with open(DB_FILE, "w") as f:
 
         json.dump(
             data,
@@ -224,14 +235,15 @@ async def upload_multiple(
 
     return {
 
-        "message":"Upload complete",
-        "uploaded":uploaded,
-        "skipped":skipped,
-        "count":len(uploaded)
+        "message": "Upload complete",
 
-   
+        "uploaded": uploaded,
+
+        "skipped": skipped,
+
+        "count": len(uploaded)
+
     }
-
     
 @app.get("/candidates")
 def get_candidates():
