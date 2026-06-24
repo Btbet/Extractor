@@ -190,11 +190,20 @@ async function uploadSingle(){
 
         `;
 
-        /* clear selected file */
+        /* Clear selected file */
         fileInput.value = "";
 
         loadStats();
         loadCandidates();
+
+        /* Remove success message + candidate details after 3 seconds */
+        setTimeout(() => {
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = "";
+
+        }, 3000);
 
     }
 
@@ -212,6 +221,14 @@ async function uploadSingle(){
             ❌ Upload Failed
             </p>
         `;
+
+        setTimeout(() => {
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = "";
+
+        }, 3000);
     }
 }
 
