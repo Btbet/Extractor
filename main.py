@@ -766,9 +766,7 @@ def match_job(
 
     }
 
-@app.delete(
-"/reset_session"
-)
+@app.delete("/reset_session")
 def reset_session():
 
     with open(
@@ -781,14 +779,24 @@ def reset_session():
             f
         )
 
+    with open(
+        STATS_FILE,
+        "w"
+    ) as f:
+
+        json.dump(
+            {
+                "total_uploads": 0
+            },
+            f
+        )
+
     return {
 
         "message":
         "Session cleared successfully"
 
     }
-
-
 @app.get("/total-uploads")
 def total_uploads():
 
