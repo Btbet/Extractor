@@ -20,61 +20,37 @@ HEADER / HERO
 ========================= */
 /* Header Background Image */
 header{
-    background:url("cv.png") center center/cover no-repeat;
-    position:relative;
-    min-height:350px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    overflow:hidden;
-}
-
 header::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.70);
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
 }
 
 .hero{
     position:relative;
     z-index:1;
-    text-align:center;
     max-width:900px;
-    margin:auto;
     padding:25px;
-    background:rgba(0,0,0,0.35);
+    background:rgba(0,0,0,0.45);
     border-radius:15px;
     backdrop-filter:blur(5px);
 }
-
-.hero h1{
-    font-size:42px;
-    margin-bottom:12px;
-    color:#ffffff;
-    font-weight:700;
-    text-shadow:0 3px 10px rgba(0,0,0,0.9);
-}
-
-.tagline{
+    .tagline{
     font-size:24px;
-    font-weight:600;
     color:#93c5fd;
-    margin-bottom:12px;
+    font-weight:600;
     text-shadow:0 2px 8px rgba(0,0,0,0.9);
 }
 
 .description{
-    max-width:800px;
-    margin:auto;
     color:#ffffff;
-    line-height:1.8;
     font-size:18px;
     font-weight:500;
+    line-height:1.8;
     text-shadow:0 2px 8px rgba(0,0,0,0.9);
 }
 /* =========================
