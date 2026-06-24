@@ -735,28 +735,47 @@ type==="pdf"
 link.click();
 
 }
-
-
-
 async function resetSession(){
 
-await fetch(
-"/reset_session",
-{
-method:"DELETE"
+    try{
+
+        await fetch(
+            "/reset_session",
+            {
+                method:"DELETE"
+            }
+        );
+
+        document.getElementById(
+            "matchResults"
+        ).innerHTML = `
+        <p style="
+            color:green;
+            font-weight:bold;
+        ">
+        ✅ Session Cleared
+        </p>
+        `;
+
+        setTimeout(() => {
+            document.getElementById(
+                "matchResults"
+            ).innerHTML = "";
+        }, 7000);
+
+        loadStats();
+
+        loadCandidates();
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+    }
+
 }
-);
-
-alert(
-"Session Cleared"
-);
-
-loadStats();
-
-loadCandidates();
-
-}
-
 function downloadResults(type){
 
 if(type==="pdf"){
