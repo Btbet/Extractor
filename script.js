@@ -125,166 +125,95 @@ async function checkAPI() {
         console.error(err);
     }
 }
+
 async function uploadSingle(){
 
-let file=
-document.getElementById(
-"singleCV"
-).files[0];
+    let fileInput =
+        document.getElementById("singleCV");
 
-if(!file){
+    let file =
+        fileInput.files[0];
 
-alert("Select a CV");
-return;
+    if(!file){
 
+        document.getElementById(
+            "singleResult"
+        ).innerHTML = `
+            <p style="
+                color:red;
+                font-weight:bold;
+            ">
+            ⚠ Select a CV
+            </p>
+        `;
+
+        return;
+    }
+
+    let form =
+        new FormData();
+
+    form.append(
+        "file",
+        file
+    );
+
+    try{
+
+        let response =
+            await fetch(
+                "/extract-cv",
+                {
+                    method:"POST",
+                    body:form
+                }
+            );
+
+        let data =
+            await response.json();
+
+        document.getElementById(
+            "singleResult"
+        ).innerHTML = `
+
+        <p style="
+            color:green;
+            font-weight:bold;
+            margin-bottom:10px;
+        ">
+        ✅ CV Uploaded Successfully
+        </p>
+
+        <h3>${data.candidate_name || ""}</h3>
+
+        <p>${data.email || ""}</p>
+
+        `;
+
+        /* clear selected file */
+        fileInput.value = "";
+
+        loadStats();
+        loadCandidates();
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        document.getElementById(
+            "singleResult"
+        ).innerHTML = `
+            <p style="
+                color:red;
+                font-weight:bold;
+            ">
+            ❌ Upload Failed
+            </p>
+        `;
+    }
 }
-
-let form=
-new FormData();
-
-form.append(
-"file",
-file
-);
-
-try{
-
-let response=
-await fetch(
-"/extract-cv",
-{
-method:"POST",
-body:form
-}
-);
-
-let data=
-await response.json();
-
-document.getElementById(
-"singleResult"
-).innerHTML=`
-
-<h3>${data.candidate_name || ""}</h3>
-
-<p>${data.email || ""}</p>
-
-`;
-
-loadStats();
-loadCandidates();
-
-}
-
-catch(err){
-
-console.log(err);
-
-alert(
-"Upload Failed"
-);
-
-}
-
-}
-
-
-
-function addCV(){
-
-let files=
-document.getElementById(
-"multipleCV"
-).files;
-
-if(files.length===0){
-
-alert(
-"Select files first"
-);
-
-return;
-
-}
-
-for(
-let i=0;
-i<files.length;
-i++
-){
-
-selectedCVs.push(
-files[i]
-);
-
-}
-
-showSelectedFiles();
-
-}
-
-
-
-function showSelectedFiles(){
-
-let html="";
-
-selectedCVs.forEach(
-
-(file,index)=>{
-
-html+=`
-
-<div
-style="
-background:#dbeafe;
-padding:10px;
-margin:5px;
-border-radius:8px;
-display:flex;
-justify-content:space-between;
-">
-
-<span>
-${file.name}
-</span>
-
-<button
-onclick="removeCV(${index})"
->
-
-X
-
-</button>
-
-</div>
-
-`;
-
-}
-
-);
-
-document.getElementById(
-"selectedFiles"
-).innerHTML=html;
-
-}
-
-
-
-function removeCV(index){
-
-selectedCVs.splice(
-index,
-1
-);
-
-showSelectedFiles();
-
-}
-
-
 
 async function uploadMultiple(){
 
