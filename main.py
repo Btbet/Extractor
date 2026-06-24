@@ -804,6 +804,12 @@ def match_job(
 
     }
 
+@app.get("/debug-candidates")
+def debug_candidates():
+
+    with open(DB_FILE, "r") as f:
+        return json.load(f)
+
 @app.delete("/reset_session")
 def reset_session():
 
