@@ -42,7 +42,7 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 
 @app.get("/")
 async def dashboard():
-    return FileResponse("dashboard.html")
+    return FileResponse("index.html")
 DB_FILE = "candidates.json"
 
 if not os.path.exists(DB_FILE):
