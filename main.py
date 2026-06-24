@@ -109,7 +109,7 @@ async def extract_cv(
 
     # Load candidates
     with open(DB_FILE, "r") as f:
-    data = json.load(f)
+        data = json.load(f)
 
     duplicate = False
 
