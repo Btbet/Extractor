@@ -15,7 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
 let selectedCVs = [];
 
 let apiLive = false;
+function showMessage(targetId, message, color = "green") {
 
+    document.getElementById(targetId).innerHTML = `
+        <p style="
+            color:${color};
+            font-weight:bold;
+            margin-top:10px;
+        ">
+            ${message}
+        </p>
+    `;
+
+    setTimeout(() => {
+        document.getElementById(targetId).innerHTML = "";
+    }, 3000);
+}
 const liveColors = [
     "#22c55e",
     "#2563eb",
