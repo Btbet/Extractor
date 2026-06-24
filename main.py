@@ -95,7 +95,6 @@ async def extract_cv(
 
     candidate["cv_hash"] = cv_hash
 
-    # Count every upload
     with open(STATS_FILE, "r") as f:
         stats = json.load(f)
 
