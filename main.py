@@ -109,54 +109,53 @@ async def extract_cv(
 
     # Load candidates
     with open(DB_FILE, "r") as f:
-        data = json.load(f)
+    data = json.load(f)
 
     duplicate = False
 
     for c in data:
 
-    if (
+        if (
 
-        (
-            c.get("email")
-            and candidate.get("email")
-            and c["email"].lower()
-            == candidate["email"].lower()
+            (
+                c.get("email")
+                and candidate.get("email")
+                and c["email"].lower()
+                == candidate["email"].lower()
+            )
+
+            or
+
+            (
+                c.get("cv_hash")
+                and candidate.get("cv_hash")
+                and c["cv_hash"]
+                == candidate["cv_hash"]
+            )
+
+        ):
+
+            c.update(candidate)
+
+            duplicate = True
+
+            break
+
+    if not duplicate:
+
+        candidate["id"] = len(data) + 1
+
+        data.append(candidate)
+
+    with open(DB_FILE, "w") as f:
+
+        json.dump(
+            data,
+            f,
+            indent=4
         )
 
-        or
-
-        (
-            c.get("cv_hash")
-            and candidate.get("cv_hash")
-            and c["cv_hash"]
-            == candidate["cv_hash"]
-        )
-
-    ):
-
-        c.update(candidate)
-
-        duplicate = True
-
-        break
-
-if not duplicate:
-
-    candidate["id"] = len(data) + 1
-
-    data.append(candidate)
-
-
-with open(DB_FILE, "w") as f:
-
-    json.dump(
-        data,
-        f,
-        indent=4
-    )
-
-return candidate
+    return candidate
 
 except Exception as e:
 
