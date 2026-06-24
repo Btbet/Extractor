@@ -1,314 +1,271 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!DOCTYPE html><html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CV Screening Dashboard</title><link rel="stylesheet" href="/static/style.css">
 
-<meta charset="UTF-8">
+</head><body><header>
+    <section class="hero">
+        <h1>AI CV Screening Platform</h1>
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+        <p class="tagline">
+            Screen Smarter. Hire Faster.
+        </p>
 
-<title>
-AI CV Screening Dashboard
-</title>
-
-<link
-rel="stylesheet"
-href="/static/style.css"
->
-
-</head>
-
-<body>
-
-<header>
-
-<section class="hero">
-    <h1>AI CV Screening Platform</h1>
-
-    <p class="tagline">
-        Screen Smarter. Hire Faster.
-    </p>
-
-    <p class="description">
-    
-Upload, analyze, and screen candidate CVs instantly using AI-powered
-resume parsing, candidate matching, and automated recruitment insights.
-    
-    </p>
-</section>
-    
+        <p class="description">
+            Upload, analyze, and screen candidate CVs instantly using AI-powered
+            resume parsing, candidate matching, and automated recruitment insights.
+        </p>
+    </section>
 </header>
-
 
 <div class="container">
 
-<div class="cards">
+    <!-- Dashboard Cards -->
+    <div class="cards">
 
-<div class="card">
+        <div class="card">
+            <h3>Total Uploads</h3>
+            <h1 id="uploads">0</h1>
+        </div>
 
-<h3>Total Uploads</h3>
+        <div class="card">
+            <h3>Total Candidates</h3>
+            <h1 id="candidates">0</h1>
+        </div>
 
-<h1 id="uploads">
-0
-</h1>
+        <div class="card">
+            <h3>Live Status</h3>
+
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                <div id="liveIndicator"></div>
+                <h1 id="apiStatus">Checking...</h1>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Upload Single CV -->
+    <div class="section">
+
+        <h2>Upload Single CV</h2>
+
+        <input
+            type="file"
+            id="singleCV"
+            accept=".pdf"
+        >
+
+        <button onclick="uploadSingle()">
+            Upload CV
+        </button>
+
+        <div id="singleResult"></div>
+
+    </div>
+
+    <!-- Upload Multiple CVs -->
+    <div class="section">
+
+        <h2>Upload Multiple CVs</h2>
+
+        <input
+            type="file"
+            id="multipleCV"
+            accept=".pdf"
+            multiple
+        >
+
+        <button
+            class="action-btn"
+            onclick="addCV()"
+        >
+            + Add CV
+        </button>
+
+        <div
+            id="selectedFiles"
+            style="margin-top:15px;"
+        ></div>
+
+        <button
+            class="action-btn"
+            onclick="uploadMultiple()"
+        >
+            Upload Files
+        </button>
+
+    </div>
+
+    <!-- Search Candidates -->
+    <div class="section">
+
+        <h2>Search Candidates</h2>
+
+        <input
+            type="text"
+            id="searchText"
+            placeholder="Search by name or skill"
+        >
+
+        <button onclick="searchCandidate()">
+            Search
+        </button>
+
+        <button onclick="clearSearch()">
+            Clear Results
+        </button>
+
+    </div>
+
+    <!-- Job Matching -->
+    <div class="work">
+
+        <details>
+
+            <summary>
+                <h2>Job Matching ▼</h2>
+            </summary>
+
+            <textarea
+                id="jobDescription"
+                rows="6"
+                placeholder="Paste Job Description"
+            ></textarea>
+
+            <button
+                class="match-btn"
+                onclick="matchJob()"
+            >
+                Match Candidates
+            </button>
+
+            <button
+                class="clear-btn"
+                onclick="clearMatch()"
+            >
+                Clear Results
+            </button>
+
+            <div id="matchResults"></div>
+
+        </details>
+
+    </div>
+
+    <!-- Downloads -->
+    <div
+        id="downloadSection"
+        style="display:none;"
+    >
+
+        <button onclick="downloadResults('pdf')">
+            Download PDF
+        </button>
+
+        <button onclick="downloadResults('doc')">
+            Download DOC
+        </button>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="buttonBar">
+
+        <button onclick="loadCandidates()">
+            Load Candidates
+        </button>
+
+        <button onclick="window.location='/export-csv'">
+            Download CSV
+        </button>
+
+        <button onclick="window.location='/export-pdf'">
+            Export PDF
+        </button>
+
+        <button onclick="resetSession()">
+            Reset Session
+        </button>
+
+    </div>
+
+    <!-- Candidate Table -->
+    <div class="tableContainer">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Skills</th>
+                    <th>Education</th>
+                    <th>Experience</th>
+                </tr>
+            </thead>
+
+            <tbody id="candidateTable">
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
-
-<div class="card">
-
-<h3>Total Candidates</h3>
-
-<h1 id="candidates">
-0
-</h1>
-
-</div>
-
-<h3>Live Status</h3>
-
-<div style="display:flex;align-items:center;gap:10px;">
-    <div id="liveIndicator"></div>
-    <h1 id="apiStatus">Checking...</h1>
-</div>
-
-<div class="section">
-
-<h2>
-Upload Single CV
-</h2>
-
-<input
-type="file"
-id="singleCV"
-accept=".pdf"
->
-
-<button onclick="uploadSingle()">
-Upload CV
-</button>
-
-<div id="singleResult"></div>
-
-</div>
-
-
-
-
-<div class="section">
-
-<h2>
-Upload Multiple CVs
-</h2>
-
-<input
-type="file"
-id="multipleCV"
-accept=".pdf"
-multiple
->
-
-<button
-class="action-btn"
-onclick="addCV()"
->
-+ Add CV
-</button>
-
-<div
-id="selectedFiles"
-style="margin-top:15px"
-></div>
-
-<button
-class="action-btn"
-onclick="uploadMultiple()"
->
-Upload Files
-</button>
-
-</div>
-
-
-
-
-<div class="section">
-
-<h2>
-Search Candidates
-</h2>
-
-<input
-type="text"
-id="searchText"
-placeholder="Search by name or skill"
->
-
-<button onclick="searchCandidate()">
-Search
-</button>
-
-<button onclick="clearSearch()">
-Clear Results
-</button>
-
-</div>
-
-
-
-
-<div class="work">
-
-<details>
-
-<summary>
-
-<h2>
-Job Matching ▼
-</h2>
-
-</summary>
-
-<textarea
-id="jobDescription"
-rows="6"
-placeholder="Paste Job Description"
-></textarea>
-
-<button
-class="match-btn"
-onclick="matchJob()"
->
-Match Candidates
-</button>
-
-<button
-class="clear-btn"
-onclick="clearMatch()"
->
-Clear Results
-</button>
-
-<div id="matchResults"></div>
-
-</details>
-
-</div>
-
-
-
-<!-- Hidden until Match button clicked -->
-
-<div
-id="downloadSection"
-style="display:none"
->
-
-<button onclick="downloadResults('pdf')">
-Download PDF
-</button>
-
-<button onclick="downloadResults('doc')">
-Download DOC
-</button>
-</div>
-
-
-<div class="buttonBar">
-
-<button onclick="loadCandidates()">
-Load Candidates
-</button>
-
-<button onclick="window.location='/export-csv'">
-Download CSV
-</button>
-
-<button onclick="window.location='/export-pdf'">
-Export PDF
-</button>
-
-<button onclick="resetSession()">
-Reset Session
-</button>
-
-</div>
-
-<div class="tableContainer">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>No</th>
-<th>Name</th>
-<th>Email</th>
-<th>Skills</th>
-<th>Education</th>
-<th>Experience</th>
-
-</tr>
-
-</thead>
-
-<tbody id="candidateTable">
-
-</tbody>
-
-</table>
-
-</div>
-
-
-</div>
-
-
-<script src="/static/script.js"></script>
-
 
 <footer class="footer">
+
     <div class="footer-content">
-    <div
-        <h3>AI CV Screening Platform</h3>
-        <p>
-            Streamline recruitment with intelligent CV screening,
-            candidate matching, and automated talent analytics.
-        </p>
-    </div>
 
-    <div>
-        <h4>Features</h4>
-        <ul>
-            <li>AI CV Extraction</li>
-            <li>Candidate Matching</li>
-            <li>Skills Analysis</li>
-            <li>Export Reports</li>
-        </ul>
-    </div>
+        <div>
+            <h3>AI CV Screening Platform</h3>
 
-    <div>
-        <h4>Platform</h4>
-        <p>Fast • Secure • </p>
-        <p>Powered by AI Recruitment Technology</p>
-    </div>
-    </div>
+            <p>
+                Streamline recruitment with intelligent CV screening,
+                candidate matching, and automated talent analytics.
+            </p>
+        </div>
+
+        <div>
+            <h4>Features</h4>
+
+            <ul>
+                <li>AI CV Extraction</li>
+                <li>Candidate Matching</li>
+                <li>Skills Analysis</li>
+                <li>Export Reports</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Platform</h4>
+
+            <p>Fast • Secure • Reliable</p>
+
+            <p>
+                Powered by AI Recruitment Technology
+            </p>
+        </div>
+
         <div>
             <h4>Contact</h4>
-            <p>Email: stackbuilderdavemindx@gmail.com </p>
+
+            <p>Email: stackbuilderdavemindx@gmail.com</p>
+
             <p>Version 1.0</p>
         </div>
+
     </div>
 
     <div class="footer-bottom">
         © 2026 CV Extractor. All Rights Reserved.
     </div>
+
 </footer>
 
+<script src="/static/script.js"></script>
 
-    
 </body>
 </html>
