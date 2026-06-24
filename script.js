@@ -203,7 +203,7 @@ async function uploadSingle(){
                 "singleResult"
             ).innerHTML = "";
 
-        }, 3000);
+        }, 6000);
 
     }
 
@@ -396,7 +396,7 @@ async function uploadMultiple(){
                 "selectedFiles"
             ).innerHTML = "";
 
-        }, 3000);
+        }, 6000);
 
     }
 
