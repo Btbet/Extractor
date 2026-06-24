@@ -43,13 +43,23 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 @app.get("/")
 async def dashboard():
     return FileResponse("index.html")
+
 DB_FILE = "candidates.json"
+STATS_FILE = "stats.json"
 
 if not os.path.exists(DB_FILE):
     with open(DB_FILE, "w") as f:
         json.dump([], f)
-        
+
+if not os.path.exists(STATS_FILE):
+    with open(STATS_FILE, "w") as f:
+        json.dump(
+            {"total_uploads": 0},
+            f
+        )
+
 @app.get("/health")
+
 async def health():
     return {"status": "ok"}
 
