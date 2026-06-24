@@ -215,7 +215,95 @@ async function uploadSingle(){
     }
 }
 
+function addCV(){
 
+    let files =
+        document.getElementById(
+            "multipleCV"
+        ).files;
+
+    if(files.length===0){
+
+        document.getElementById(
+            "selectedFiles"
+        ).innerHTML = `
+        <p style="
+        color:red;
+        font-weight:bold;
+        ">
+        Select files first
+        </p>
+        `;
+
+        return;
+    }
+
+    for(
+        let i=0;
+        i<files.length;
+        i++
+    ){
+
+        selectedCVs.push(
+            files[i]
+        );
+
+    }
+
+    document.getElementById(
+        "multipleCV"
+    ).value = "";
+
+    showSelectedFiles();
+}
+
+function showSelectedFiles(){
+
+    let html = "";
+
+    selectedCVs.forEach(
+
+        (file,index)=>{
+
+            html += `
+            <div style="
+                background:#dbeafe;
+                padding:10px;
+                margin:5px;
+                border-radius:8px;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            ">
+                <span>${file.name}</span>
+
+                <button
+                    onclick="removeCV(${index})"
+                    style="
+                        background:#dc2626;
+                        color:white;
+                        border:none;
+                        padding:5px 10px;
+                        border-radius:5px;
+                    ">
+                    X
+                </button>
+            </div>
+            `;
+        }
+    );
+
+    document.getElementById(
+        "selectedFiles"
+    ).innerHTML = html;
+}
+
+function removeCV(index){
+
+    selectedCVs.splice(index, 1);
+
+    showSelectedFiles();
+}
 async function uploadMultiple(){
 
     if(selectedCVs.length===0){
