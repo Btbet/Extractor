@@ -37,6 +37,50 @@ overflow-x:hidden;
     background:#facc15;
 }
 
+.footer {
+    background: #111827;
+    color: #e5e7eb;
+    margin-top: 60px;
+    padding: 40px 20px 15px;
+    border-top: 1px solid #374151;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.footer-content h3,
+.footer-content h4 {
+    color: #60a5fa;
+    margin-bottom: 10px;
+}
+
+.footer-content p,
+.footer-content li {
+    color: #9ca3af;
+    line-height: 1.8;
+}
+
+.footer-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #374151;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
 
 header{
 background:linear-gradient(
