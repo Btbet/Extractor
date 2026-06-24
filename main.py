@@ -88,7 +88,11 @@ async def extract_cv(
                 text += extracted + "\n"
 
         candidate = extract_cv_data(text)
+cv_hash = hashlib.sha256(
+    text.encode("utf-8")
+).hexdigest()
 
+candidate["cv_hash"] = cv_hash
         # Count every upload
         with open(STATS_FILE, "r") as f:
             stats = json.load(f)
@@ -177,6 +181,11 @@ async def upload_multiple(
                     text += extracted + "\n"
 
             candidate = extract_cv_data(text)
+            cv_hash = hashlib.sha256(
+    text.encode("utf-8")
+).hexdigest()
+
+candidate["cv_hash"] = cv_hash
 
             # Count every uploaded file
             with open(STATS_FILE, "r") as f:
