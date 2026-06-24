@@ -115,10 +115,24 @@ candidate["cv_hash"] = cv_hash
         for c in data:
 
             if (
-                c.get("email")
-                and candidate.get("email")
-                and c["email"] == candidate["email"]
-            ):
+
+    (
+        c.get("email")
+        and candidate.get("email")
+        and c["email"].lower()
+        == candidate["email"].lower()
+    )
+
+    or
+
+    (
+        c.get("cv_hash")
+        and candidate.get("cv_hash")
+        and c["cv_hash"]
+        == candidate["cv_hash"]
+    )
+
+):
 
                 c.update(candidate)
 
@@ -205,10 +219,24 @@ candidate["cv_hash"] = cv_hash
             for c in data:
 
                 if (
-                    c.get("email")
-                    and candidate.get("email")
-                    and c["email"] == candidate["email"]
-                ):
+
+    (
+        c.get("email")
+        and candidate.get("email")
+        and c["email"].lower()
+        == candidate["email"].lower()
+    )
+
+    or
+
+    (
+        c.get("cv_hash")
+        and candidate.get("cv_hash")
+        and c["cv_hash"]
+        == candidate["cv_hash"]
+    )
+
+):
 
                     c.update(candidate)
 
