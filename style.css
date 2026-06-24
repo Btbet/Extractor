@@ -277,6 +277,38 @@ background:#6f4518;
     background:#b91c1c;
 }
 
+
+.search-btn{
+    background:#22c55e;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.search-btn:hover{
+    background:#16a34a;
+    transform:translateY(-2px);
+}
+
+.clear-btn{
+    background:#8b5cf6;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.clear-btn:hover{
+    background:#7c3aed;
+    transform:translateY(-2px);
+}
 /* EXISTING CODE CONTINUES */
 
 input,
