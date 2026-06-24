@@ -168,7 +168,6 @@ async def extract_cv(
         return {
             "error": "Invalid or corrupted PDF"
                     }
-
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
@@ -201,11 +200,12 @@ async def upload_multiple(
                     text += extracted + "\n"
 
             candidate = extract_cv_data(text)
-            cv_hash = hashlib.sha256(
-    text.encode("utf-8")
-).hexdigest()
 
-candidate["cv_hash"] = cv_hash
+            cv_hash = hashlib.sha256(
+                text.encode("utf-8")
+            ).hexdigest()
+
+            candidate["cv_hash"] = cv_hash
 
             # Count every uploaded file
             with open(STATS_FILE, "r") as f:
@@ -226,27 +226,28 @@ candidate["cv_hash"] = cv_hash
 
                 if (
 
-    (
-        c.get("email")
-        and candidate.get("email")
-        and c["email"].lower()
-        == candidate["email"].lower()
-    )
+                    (
+                        c.get("email")
+                        and candidate.get("email")
+                        and c["email"].lower()
+                        == candidate["email"].lower()
+                    )
 
-    or
+                    or
 
-    (
-        c.get("cv_hash")
-        and candidate.get("cv_hash")
-        and c["cv_hash"]
-        == candidate["cv_hash"]
-    )
+                    (
+                        c.get("cv_hash")
+                        and candidate.get("cv_hash")
+                        and c["cv_hash"]
+                        == candidate["cv_hash"]
+                    )
 
-):
+                ):
 
                     c.update(candidate)
 
                     duplicate = True
+
                     break
 
             if not duplicate:
