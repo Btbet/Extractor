@@ -18,62 +18,99 @@ color:#111827;
 /* =========================
 HEADER / HERO
 ========================= */
-
+/* Header Background Image */
 header{
-background:url("cv.png") center center/cover no-repeat;
-color:white;
-text-align:center;
-padding:60px 20px;
-position:relative;
+    background: url("cv.png") center center/cover no-repeat;
+    position: relative;
+    text-align: center;
+    padding: 80px 20px;
+    color: white;
+    overflow: hidden;
 }
+
+/* Dark Overlay */
 header::before{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.45);
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
 }
 
+/* Glassmorphism Hero Card */
 .hero{
-position:relative;
-z-index:1;
-text-align:center;
-max-width:1000px;
-margin:auto;
-padding:15px 10px;
+    position: relative;
+    z-index: 1;
+
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    max-width: 900px;
+    margin: auto;
+
+    padding: 30px;
+    border-radius: 15px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
 }
 
-
-.hero{
-text-align:center;
-max-width:1000px;
-margin:auto;
-padding:15px 10px;
-}
-
+/* Main Heading */
 .hero h1{
-font-size:42px;
-margin-bottom:12px;
-color:#ffffff;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #ffffff;
+    text-shadow: 3px 3px 8px rgba(0,0,0,0.9);
 }
 
+/* Tagline */
 .tagline{
-font-size:24px;
-font-weight:600;
-color:#93c5fd;
-margin-bottom:12px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #93c5fd;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
 }
 
+/* Description */
 .description{
-max-width:800px;
-margin:auto;
-color:#d1d5db;
-line-height:1.7;
-font-size:16px;
+    max-width: 800px;
+    margin: auto;
+
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.8;
+
+    text-shadow:
+        2px 2px 6px rgba(0,0,0,0.9),
+        0 0 10px rgba(0,0,0,0.7);
 }
 
+/* Mobile Responsive */
+@media (max-width: 768px){
+
+    header{
+        padding: 60px 15px;
+    }
+
+    .hero{
+        padding: 20px;
+        margin: 0 10px;
+    }
+
+    .hero h1{
+        font-size: 32px;
+    }
+
+    .tagline{
+        font-size: 20px;
+    }
+
+    .description{
+        font-size: 16px;
+    }
+}
 /* =========================
 CONTAINER
 ========================= */
