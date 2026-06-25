@@ -562,92 +562,119 @@ function viewCandidate(index){
 
 function downloadCandidatePDF() {
 
-    if (!selectedCandidate) {
-        alert("No candidate selected");
-        return;
-    }
+if (!selectedCandidate) {
+    alert("No candidate selected");
+    return;
+}
 
-    const { jsPDF } = window.jspdf;
+const { jsPDF } = window.jspdf;
 
-    const pdf = new jsPDF();
+const pdf = new jsPDF();
 
-    let y = 20;
+let y = 20;
 
-    pdf.setFontSize(18);
-    pdf.text("Candidate Profile", 20, y);
+pdf.setFontSize(18);
+pdf.text("Candidate Profile", 20, y);
 
-    y += 15;
+y += 15;
 
-    pdf.setFontSize(12);
+pdf.setFontSize(12);
 
-    pdf.text(
-        `Name: ${selectedCandidate.name || "N/A"}`,
-        20,
-        y
+pdf.text(
+    `Name: ${selectedCandidate.name || "N/A"}`,
+    20,
+    y
+);
+
+y += 10;
+
+pdf.text(
+    `Email: ${selectedCandidate.email || "N/A"}`,
+    20,
+    y
+);
+
+y += 10;
+
+pdf.text(
+    `Phone: ${selectedCandidate.phone || "N/A"}`,
+    20,
+    y
+);
+
+y += 10;
+
+pdf.text(
+    `Experience: ${selectedCandidate.years_experience || 0} years`,
+    20,
+    y
+);
+
+y += 15;
+
+pdf.text("Education:", 20, y);
+
+y += 10;
+
+(selectedCandidate.education || []).forEach(item => {
+
+    const cleanItem = String(item)
+        .replace(/[^\x20-\x7E]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    pdf.text("- " + cleanItem, 25, y);
+
+    y += 8;
+});
+
+y += 5;
+
+pdf.text("Skills:", 20, y);
+
+y += 10;
+
+(selectedCandidate.skills || []).forEach(skill => {
+
+    const cleanSkill = String(skill)
+        .replace(/[^\x20-\x7E]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const skillLines = pdf.splitTextToSize(
+        "- " + cleanSkill,
+        160
     );
 
-    y += 10;
+    pdf.text(skillLines, 25, y);
 
-    pdf.text(
-        `Email: ${selectedCandidate.email || "N/A"}`,
-        20,
-        y
-    );
+    y += (skillLines.length * 7);
+});
 
-    y += 10;
+y += 10;
 
-    pdf.text(
-        `Phone: ${selectedCandidate.phone || "N/A"}`,
-        20,
-        y
-    );
+pdf.text("AI Summary:", 20, y);
 
-    y += 10;
+y += 10;
 
-    pdf.text(
-        `Experience: ${selectedCandidate.years_experience || 0} years`,
-        20,
-        y
-    );
+const cleanSummary = String(
+    selectedCandidate.summary || ""
+)
+    .replace(/[^\x20-\x7E]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
-    y += 15;
+const summaryLines = pdf.splitTextToSize(
+    cleanSummary,
+    170
+);
 
-    pdf.text("Education:", 20, y);
+pdf.text(summaryLines, 20, y);
 
-    y += 10;
+pdf.save(
+    `${selectedCandidate.name || "candidate"}_profile.pdf`
+);
 
-    (selectedCandidate.education || []).forEach(item => {
-        pdf.text("- " + item, 25, y);
-        y += 8;
-    });
-
-    y += 5;
-
-    pdf.text("Skills:", 20, y);
-
-    y += 10;
-
-    (selectedCandidate.skills || []).forEach(skill => {
-        pdf.text("- " + skill, 25, y);
-        y += 8;
-    });
-
-    y += 10;
-
-    pdf.text("AI Summary:", 20, y);
-
-    y += 10;
-
-    const summaryLines = pdf.splitTextToSize(
-        selectedCandidate.summary || "",
-        170
-    );
-
-    pdf.text(summaryLines, 20, y);
-
-    pdf.save(
-        `${selectedCandidate.name || "candidate"}_profile.pdf`
-    );
 }
 function closeModal(){
 
