@@ -208,7 +208,7 @@ async def extract_cv(
         # Save to Supabase
         try:
             supabase.table("candidates").insert({
-                "candidate_name": candidate.get("candidate_name"),
+                "name": candidate.get("candidate_name"),
                 "email": candidate.get("email"),
                 "phone": candidate.get("phone"),
                 "skills": candidate.get("skills"),
