@@ -373,52 +373,44 @@ def get_candidates():
 
 
 @app.get("/search")
-def search(query:str):
+def search(query: str):
 
-    with open(DB_FILE,"r") as f:
+    with open(DB_FILE, "r") as f:
+        candidates = json.load(f)
 
-        candidates=json.load(f)
+    q = query.strip().lower()
 
-    q=query.strip().lower()
-
-    results=[]
+    results = []
 
     for candidate in candidates:
 
-        name=candidate.get("name", "")
-        ).lower()
+        name = candidate.get("name", "").lower()
 
-        skills=candidate.get(
+        skills = candidate.get(
             "skills",
             []
         )
 
-        skill_match=any(
-
+        skill_match = any(
             q in skill.lower()
-
             for skill in skills
-
         )
 
-        name_match=q in name
+        name_match = q in name
 
         if skill_match or name_match:
+            results.append(candidate)
 
-            results.append(
-                candidate
-            )
+    numbered = []
 
-    numbered=[]
-
-    for i,candidate in enumerate(
+    for i, candidate in enumerate(
         results,
         start=1
     ):
 
-        item=candidate.copy()
+        item = candidate.copy()
 
-        item["number"]=i
+        item["number"] = i
 
         item.pop(
             "id",
