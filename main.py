@@ -131,24 +131,12 @@ async def extract_cv(
 
     try:
 
-        pdf_bytes = await file.read()
-
-        reader = PdfReader(
-            BytesIO(pdf_bytes)
-        )
-
-        text = ""
-
-        for page in reader.pages:
-
-            extracted = page.extract_text()
-
-            if extracted:
-
-                text += extracted + "\n"
+        text = await extract_text_from_file(file)
 
         candidate = extract_cv_data(text)
+
         candidate["summary"] = generate_summary(candidate)
+
         cv_hash = hashlib.sha256(
             text.encode("utf-8")
         ).hexdigest()
@@ -226,8 +214,9 @@ async def extract_cv(
         print(f"Upload error: {e}")
 
         return {
-            "error": "Invalid or corrupted PDF"
-                    }
+            "error": str(e)
+            }
+
 
 @app.post("/upload-multiple")
 async def upload_multiple(
