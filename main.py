@@ -41,6 +41,53 @@ from fastapi.responses import FileResponse
 
 app.mount("/static", StaticFiles(directory="."), name="static")
 
+async def extract_text_from_file(file):
+
+    content = await file.read()
+
+    filename = file.filename.lower()
+
+    if filename.endswith(".pdf"):
+
+        reader = PdfReader(BytesIO(content))
+
+        text = ""
+
+        for page in reader.pages:
+
+            extracted = page.extract_text()
+
+            if extracted:
+                text += extracted + "\n"
+
+        return text
+
+    elif filename.endswith(".docx"):
+
+        doc = Document(BytesIO(content))
+
+        return "\n".join(
+            p.text for p in doc.paragraphs
+        )
+
+    elif filename.endswith(".txt"):
+
+        return content.decode(
+            "utf-8",
+            errors="ignore"
+        )
+
+    else:
+
+        raise Exception(
+            "Unsupported file type"
+        )
+
+
+@app.get("/")
+async def dashboard():
+    return FileResponse("index.html")
+
 @app.get("/")
 async def dashboard():
     return FileResponse("index.html")
