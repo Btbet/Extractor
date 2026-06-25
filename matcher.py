@@ -343,32 +343,23 @@ def calculate_match_score(
     }
 
 
-def generate_summary(
+def generate_summary(candidate):
 
-    candidate
+    skills = candidate.get("skills", [])
 
-):
+    short_skills = [
+        skill.strip()
+        for skill in skills
+        if len(skill.strip()) < 40
+    ][:5]
 
-    skills=", ".join(
-
-        candidate.get(
-            "skills",
-            []
-        )[:5]
-
-    )
-
-    years=candidate.get(
+    years = candidate.get(
         "years_experience",
         0
     )
 
     return (
-
-        f"{candidate.get('candidate_name')} "
-
+        f"{candidate.get('candidate_name', 'Candidate')} "
         f"has {years} years experience "
-
-        f"with skills in {skills}."
-
+        f"with skills in {', '.join(short_skills)}."
     )
