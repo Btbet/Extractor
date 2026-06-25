@@ -346,9 +346,8 @@ async def upload_multiple(
 
 @app.get("/candidates")
 def get_candidates(page: int = 1, limit: int = 10):
-
-with open(DB_FILE, "r") as f:
-    candidates = json.load(f)
+    with open(DB_FILE, "r") as f:
+        candidates = json.load(f)
 
 total = len(candidates)
 
