@@ -491,72 +491,164 @@ console.log(err);
 
 }
 
+let selectedCandidate = null;
+
 function viewCandidate(index){
 
-const c = currentCandidates[index];
+    const c = currentCandidates[index];
 
-console.log("Candidate Data:", c);
+    selectedCandidate = c;
 
-document.getElementById(
-"candidateDetails"
-).innerHTML = `
+    console.log("Candidate Data:", c);
 
-<div style="line-height:1.8;">
+    document.getElementById(
+        "candidateDetails"
+    ).innerHTML = `
 
-<h2>${c.candidate_name || "Unknown Candidate"}</h2>
+    <div style="line-height:1.8;">
 
-<p>
-<strong>Email:</strong>
-${c.email || "N/A"}
-</p>
+        <h2>${c.name || "Unknown Candidate"}</h2>
 
-<p>
-<strong>Phone:</strong>
-${c.phone || "Not Available"}
-</p>
+        <p>
+        <strong>Email:</strong>
+        ${c.email || "N/A"}
+        </p>
 
-<p>
-<strong>Experience:</strong>
-${c.years_experience || 0} years
-</p>
+        <p>
+        <strong>Phone:</strong>
+        ${c.phone || "Not Available"}
+        </p>
 
-<p>
-<strong>Education:</strong><br>
-${(c.education || []).join("<br>")}
-</p>
+        <p>
+        <strong>Experience:</strong>
+        ${c.years_experience || 0} years
+        </p>
 
-<p>
-<strong>Skills:</strong>
-</p>
+        <p>
+        <strong>Education:</strong><br>
+        ${(c.education || []).join("<br>")}
+        </p>
 
-<div>
-${(c.skills || [])
-.map(
-s => `<span class="skill">${s}</span>`
-)
-.join(" ")}
-</div>
+        <p>
+        <strong>Skills:</strong>
+        </p>
 
-<hr>
+        <div>
+        ${(c.skills || [])
+            .map(
+                s => `<span class="skill">${s}</span>`
+            )
+            .join(" ")}
+        </div>
 
-<p>
-<strong>AI Summary:</strong>
-</p>
+        <hr>
 
-<p>
-${c.summary || "No summary available"}
-</p>
+        <p>
+        <strong>AI Summary:</strong>
+        </p>
 
-</div>
+        <p>
+        ${c.summary || "No summary available"}
+        </p>
 
-`;
+    </div>
 
-document.getElementById(
-"candidateModal"
-).style.display = "block";
+    `;
 
+    document.getElementById(
+        "candidateModal"
+    ).style.display = "block";
 }
 
+function downloadCandidatePDF() {
+
+    if (!selectedCandidate) {
+        alert("No candidate selected");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF();
+
+    let y = 20;
+
+    pdf.setFontSize(18);
+    pdf.text("Candidate Profile", 20, y);
+
+    y += 15;
+
+    pdf.setFontSize(12);
+
+    pdf.text(
+        `Name: ${selectedCandidate.name || "N/A"}`,
+        20,
+        y
+    );
+
+    y += 10;
+
+    pdf.text(
+        `Email: ${selectedCandidate.email || "N/A"}`,
+        20,
+        y
+    );
+
+    y += 10;
+
+    pdf.text(
+        `Phone: ${selectedCandidate.phone || "N/A"}`,
+        20,
+        y
+    );
+
+    y += 10;
+
+    pdf.text(
+        `Experience: ${selectedCandidate.years_experience || 0} years`,
+        20,
+        y
+    );
+
+    y += 15;
+
+    pdf.text("Education:", 20, y);
+
+    y += 10;
+
+    (selectedCandidate.education || []).forEach(item => {
+        pdf.text("- " + item, 25, y);
+        y += 8;
+    });
+
+    y += 5;
+
+    pdf.text("Skills:", 20, y);
+
+    y += 10;
+
+    (selectedCandidate.skills || []).forEach(skill => {
+        pdf.text("- " + skill, 25, y);
+        y += 8;
+    });
+
+    y += 10;
+
+    pdf.text("AI Summary:", 20, y);
+
+    y += 10;
+
+    const summaryLines = pdf.splitTextToSize(
+        selectedCandidate.summary || "",
+        170
+    );
+
+    pdf.text(summaryLines, 20, y);
+
+    pdf.save(
+        `${selectedCandidate.name || "candidate"}_profile.pdf`
+    );
+}
 function closeModal(){
 
 document.getElementById(
