@@ -459,7 +459,7 @@ def download_match_doc():
     ):
 
         doc.add_heading(
-            f"{index}. {c.get('candidate_name','N/A')}",
+            f"{index}. {c.get('name','N/A')}",
             level=2
         )
 
