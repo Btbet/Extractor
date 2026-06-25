@@ -385,9 +385,7 @@ def search(query:str):
 
     for candidate in candidates:
 
-        name=candidate.get(
-            "candidate_name",
-            ""
+        name=candidate.get("name", "")
         ).lower()
 
         skills=candidate.get(
@@ -550,7 +548,7 @@ def download_match_pdf():
 
         story.append(
             Paragraph(
-                f"{index}. Name: {c.get('candidate_name','N/A')}",
+                f"{index}. Name: {c.get('name', 'N/A')}",
                 normal
             )
         )
@@ -732,7 +730,7 @@ def export_pdf():
 
         story.append(
             Paragraph(
-                f"{index}. {c.get('candidate_name','N/A')}",
+                f"{index}. {c.get('name', 'N/A')}",
                 normal
             )
         )
