@@ -345,32 +345,37 @@ async def upload_multiple(
 
 
 @app.get("/candidates")
-def get_candidates():
+def get_candidates(page: int = 1, limit: int = 10):
 
-    with open(DB_FILE,"r") as f:
+with open(DB_FILE, "r") as f:
+    candidates = json.load(f)
 
-        candidates=json.load(f)
+total = len(candidates)
 
-    output=[]
+start = (page - 1) * limit
+end = start + limit
 
-    for i,candidate in enumerate(
-        candidates,
-        start=1
-    ):
+page_candidates = candidates[start:end]
 
-        item=candidate.copy()
+output = []
 
-        item["number"]=i
+for i, candidate in enumerate(page_candidates, start=start + 1):
 
-        item.pop(
-            "id",
-            None
-        )
+    item = candidate.copy()
 
-        output.append(item)
+    item["number"] = i
 
-    return output
+    item.pop("id", None)
 
+    output.append(item)
+
+return {
+    "total": total,
+    "page": page,
+    "limit": limit,
+    "pages": (total + limit - 1) // limit,
+    "candidates": output
+}
 
 @app.get("/search")
 def search(query: str):
