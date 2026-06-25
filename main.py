@@ -47,6 +47,7 @@ async def extract_text_from_file(file):
 
     filename = file.filename.lower()
 
+    # PDF
     if filename.endswith(".pdf"):
 
         reader = PdfReader(BytesIO(content))
@@ -62,14 +63,18 @@ async def extract_text_from_file(file):
 
         return text
 
+    # DOCX
     elif filename.endswith(".docx"):
 
         doc = Document(BytesIO(content))
 
         return "\n".join(
-            p.text for p in doc.paragraphs
+            p.text.strip()
+            for p in doc.paragraphs
+            if p.text.strip()
         )
 
+    # TXT
     elif filename.endswith(".txt"):
 
         return content.decode(
@@ -77,10 +82,18 @@ async def extract_text_from_file(file):
             errors="ignore"
         )
 
+    # DOC (old Microsoft Word format)
+    elif filename.endswith(".doc"):
+
+        raise Exception(
+            "DOC files are not supported. Please save as DOCX or PDF."
+        )
+
+    # Unsupported file
     else:
 
         raise Exception(
-            "Unsupported file type"
+            f"Unsupported file type: {filename}"
         )
 
 
