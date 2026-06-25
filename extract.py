@@ -285,7 +285,7 @@ def extract_cv_data(text):
 
     candidate={
 
-        "candidate_name":
+        "name":
         extract_name(text),
 
         "email":
