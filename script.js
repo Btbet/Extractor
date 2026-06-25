@@ -803,7 +803,7 @@ html+=`
 <div class="card">
 
 <h3>
-${index+1}. ${c.candidate_name}
+${index+1}. ${c.name}
 </h3>
 
 <p>
