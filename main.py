@@ -138,7 +138,6 @@ async def health():
 async def extract_cv(
     file: UploadFile = File(...)
 ):
-
     try:
 
         text = await extract_text_from_file(file)
@@ -155,22 +154,19 @@ async def extract_cv(
 
         # Count every upload
         with open(STATS_FILE, "r") as f:
-
             stats = json.load(f)
 
         stats["total_uploads"] += 1
 
         with open(STATS_FILE, "w") as f:
-
             json.dump(
                 stats,
                 f,
                 indent=4
             )
 
-        # Load candidates
+        # Load candidates from local JSON
         with open(DB_FILE, "r") as f:
-
             data = json.load(f)
 
         duplicate = False
@@ -178,44 +174,53 @@ async def extract_cv(
         for c in data:
 
             if (
-
                 (
                     c.get("email")
                     and candidate.get("email")
                     and c["email"].lower()
                     == candidate["email"].lower()
                 )
-
                 or
-
                 (
                     c.get("cv_hash")
                     and candidate.get("cv_hash")
                     and c["cv_hash"]
                     == candidate["cv_hash"]
                 )
-
             ):
 
                 c.update(candidate)
-
                 duplicate = True
-
                 break
 
         if not duplicate:
-
             candidate["id"] = len(data) + 1
-
             data.append(candidate)
 
+        # Save locally
         with open(DB_FILE, "w") as f:
-
             json.dump(
                 data,
                 f,
                 indent=4
             )
+
+        # Save to Supabase
+        try:
+            supabase.table("candidates").insert({
+                "candidate_name": candidate.get("candidate_name"),
+                "email": candidate.get("email"),
+                "phone": candidate.get("phone"),
+                "skills": candidate.get("skills"),
+                "education": candidate.get("education"),
+                "years_experience": candidate.get("years_experience"),
+                "score": candidate.get("score"),
+                "summary": candidate.get("summary"),
+                "cv_hash": candidate.get("cv_hash")
+            }).execute()
+
+        except Exception as e:
+            print(f"Supabase insert error: {e}")
 
         return candidate
 
@@ -223,28 +228,10 @@ async def extract_cv(
 
         print(f"Upload error: {e}")
 
-    try:
-    supabase.table("candidates").insert({
-        "candidate_name": candidate.get("candidate_name"),
-        "email": candidate.get("email"),
-        "phone": candidate.get("phone"),
-        "skills": candidate.get("skills"),
-        "education": candidate.get("education"),
-        "years_experience": candidate.get("years_experience"),
-        "score": candidate.get("score"),
-        "summary": candidate.get("summary"),
-        "cv_hash": candidate.get("cv_hash")
-    }).execute()
-
-       except Exception as e:
-           print(f"Supabase insert error: {e}")
-
         return {
             "error": str(e)
-            }
-except Exception as e:
-    print(f"Upload error: {e}")
-    return {"error": str(e)}
+        }
+
 
 @app.post("/upload-multiple")
 async def upload_multiple(
