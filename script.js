@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 let currentCandidates = [];
 let selectedCVs = [];
-
+let currentPage = 1;
+const pageSize = 10;
+let totalPages = 1;
 let apiLive = false;
 
 const liveColors = [
