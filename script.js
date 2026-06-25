@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fast LED animation
     setInterval(animateIndicator, 100);
 });
-
+let currentCandidates = [];
 let selectedCVs = [];
 
 let apiLive = false;
@@ -422,19 +422,17 @@ async function loadCandidates(){
 
 try{
 
-let response=
-await fetch(
-"/candidates"
-);
+let response =
+await fetch("/candidates");
 
-let data=
+let data =
 await response.json();
+
+currentCandidates = data;
 
 let html="";
 
-data.forEach(
-
-(c,index)=>{
+data.forEach((c,index)=>{
 
 html+=`
 
@@ -449,6 +447,7 @@ html+=`
 <td>
 
 ${(c.skills || [])
+.slice(0,5)
 .map(
 s=>`<span class="skill">${s}</span>`
 )
@@ -457,30 +456,30 @@ s=>`<span class="skill">${s}</span>`
 </td>
 
 <td>
-
-${(c.education || [])
-.join(", ")}
-
+${(c.education || []).join(", ")}
 </td>
 
 <td>
+${c.years_experience || 0} years
+</td>
 
-${c.years_experience || 0}
-years
-
+<td>
+<button
+class="load-btn"
+onclick="viewCandidate(${index})">
+View
+</button>
 </td>
 
 </tr>
 
 `;
 
-}
-
-);
+});
 
 document.getElementById(
 "candidateTable"
-).innerHTML=html;
+).innerHTML = html;
 
 }
 
@@ -492,7 +491,92 @@ console.log(err);
 
 }
 
+function viewCandidate(index){
 
+const c =
+currentCandidates[index];
+
+document.getElementById(
+"candidateDetails"
+).innerHTML = `
+
+<div style="line-height:1.8;">
+
+<h2>${c.candidate_name || "Unknown Candidate"}</h2>
+
+<p>
+<strong>Email:</strong>
+${c.email || "N/A"}
+</p>
+
+<p>
+<strong>Experience:</strong>
+${c.years_experience || 0} years
+</p>
+
+<p>
+<strong>Education:</strong><br>
+${(c.education || []).join("<br>")}
+</p>
+
+<p>
+<strong>Skills:</strong>
+</p>
+
+<div>
+${(c.skills || [])
+.map(
+s=>`<span class="skill">${s}</span>`
+)
+.join(" ")}
+</div>
+
+<hr>
+
+<p>
+<strong>AI Summary:</strong>
+</p>
+
+<p>
+${c.summary || "No summary available"}
+</p>
+
+</div>
+
+`;
+
+document.getElementById(
+"candidateModal"
+).style.display =
+"block";
+}
+
+function closeModal(){
+
+document.getElementById(
+"candidateModal"
+).style.display =
+"none";
+
+}
+
+window.addEventListener(
+"click",
+function(event){
+
+const modal =
+document.getElementById(
+"candidateModal"
+);
+
+if(event.target === modal){
+
+modal.style.display =
+"none";
+
+}
+
+});
 
 async function searchCandidate(){
 
