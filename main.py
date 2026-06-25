@@ -349,32 +349,28 @@ def get_candidates(page: int = 1, limit: int = 10):
     with open(DB_FILE, "r") as f:
         candidates = json.load(f)
 
-total = len(candidates)
+    total = len(candidates)
 
-start = (page - 1) * limit
-end = start + limit
+    start = (page - 1) * limit
+    end = start + limit
 
-page_candidates = candidates[start:end]
+    page_candidates = candidates[start:end]
 
-output = []
+    output = []
 
-for i, candidate in enumerate(page_candidates, start=start + 1):
+    for i, candidate in enumerate(page_candidates, start=start + 1):
+        item = candidate.copy()
+        item["number"] = i
+        item.pop("id", None)
+        output.append(item)
 
-    item = candidate.copy()
-
-    item["number"] = i
-
-    item.pop("id", None)
-
-    output.append(item)
-
-return {
-    "total": total,
-    "page": page,
-    "limit": limit,
-    "pages": (total + limit - 1) // limit,
-    "candidates": output
-}
+    return {
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": (total + limit - 1) // limit,
+        "candidates": output
+    }
 
 @app.get("/search")
 def search(query: str):
