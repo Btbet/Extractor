@@ -88,7 +88,7 @@ async def extract_cv(
                 text += extracted + "\n"
 
         candidate = extract_cv_data(text)
-
+        candidate["summary"] = generate_summary(candidate)
         cv_hash = hashlib.sha256(
             text.encode("utf-8")
         ).hexdigest()
@@ -200,7 +200,7 @@ async def upload_multiple(
                     text += extracted + "\n"
 
             candidate = extract_cv_data(text)
-
+            candidate["summary"] = generate_summary(candidate)
             cv_hash = hashlib.sha256(
                 text.encode("utf-8")
             ).hexdigest()
