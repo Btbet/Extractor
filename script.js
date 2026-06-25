@@ -420,80 +420,107 @@ async function uploadMultiple(){
     }
 }
 
-async function loadCandidates(){
+async function loadCandidates() {
 
-try{
+try {
 
-let response =
-await fetch("/candidates");
+    let response = await fetch(
+        `/candidates?page=${currentPage}&limit=${pageSize}`
+    );
 
-let data =
-await response.json();
+    let data = await response.json();
 
-currentCandidates = data;
+    currentCandidates = data.candidates;
 
-let html="";
+    totalPages = data.pages;
 
-data.forEach((c,index)=>{
+    let html = "";
 
-html+=`
+    currentCandidates.forEach((c, index) => {
 
-<tr>
+        html += `
 
-<td>${index+1}</td>
+        <tr>
 
-<td>${c.name || ""}</td>
+            <td>${c.number}</td>
 
-<td>${c.email || ""}</td>
+            <td>${c.name || ""}</td>
 
-<td>
+            <td>${c.email || ""}</td>
 
-${(c.skills || [])
-.slice(0,5)
-.map(
-s=>`<span class="skill">${s}</span>`
-)
-.join("")}
+            <td>
 
-</td>
+                ${(c.skills || [])
+                    .slice(0, 5)
+                    .map(
+                        s => `<span class="skill">${s}</span>`
+                    )
+                    .join("")}
 
-<td>
-${(c.education || []).join(", ")}
-</td>
+            </td>
 
-<td>
-${c.years_experience || 0} years
-</td>
+            <td>
+                ${(c.education || []).join(", ")}
+            </td>
 
-<td>
-<button
-class="load-btn"
-onclick="viewCandidate(${index})">
-View
-</button>
-</td>
+            <td>
+                ${c.years_experience || 0} years
+            </td>
 
-</tr>
+            <td>
+                <button
+                    class="load-btn"
+                    onclick="viewCandidate(${index})">
+                    View
+                </button>
+            </td>
 
-`;
+        </tr>
 
-});
+        `;
 
-document.getElementById(
-"candidateTable"
-).innerHTML = html;
+    });
+
+    document.getElementById("candidateTable").innerHTML = html;
+
+    document.getElementById("pageNumber").innerText =
+        `Page ${currentPage} of ${totalPages}`;
 
 }
 
-catch(err){
+catch (err) {
 
-console.log(err);
+    console.log(err);
 
 }
 
 }
 
 let selectedCandidate = null;
+
+function nextPage() {
+
+if (currentPage < totalPages) {
+
+    currentPage++;
+
+    loadCandidates();
+
+}
+
+}
+
+function previousPage() {
+
+if (currentPage > 1) {
+
+    currentPage--;
+
+    loadCandidates();
+
+}
+
+}
 
 function viewCandidate(index){
 
