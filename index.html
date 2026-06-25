@@ -223,8 +223,6 @@ Reset Session
 
 <!-- Candidate Modal -->
 <div id="candidateModal" class="modal">
-<!-- Candidate Modal -->
-<div id="candidateModal" class="modal">
 
     <div class="modal-content">
 
@@ -236,10 +234,18 @@ Reset Session
 
         <div id="candidateDetails"></div>
 
-        <br>
-
-        <button id="downloadProfileBtn"
-                class="download-btn">
+        <button
+            id="downloadPdfBtn"
+            onclick="downloadCandidatePDF()"
+            style="
+                margin-top:15px;
+                background:#28a745;
+                color:white;
+                border:none;
+                padding:10px 15px;
+                border-radius:5px;
+                cursor:pointer;
+            ">
             Download Profile PDF
         </button>
 
@@ -296,7 +302,7 @@ Reset Session
     </div>
 
 </footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="/static/script.js"></script>
 
 </body>
