@@ -440,7 +440,7 @@ html+=`
 
 <td>${index+1}</td>
 
-<td>${c.candidate_name || ""}</td>
+<td>${c.name || ""}</td>
 
 <td>${c.email || ""}</td>
 
