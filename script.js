@@ -184,7 +184,7 @@ async function uploadSingle(){
         ✅ CV Uploaded Successfully
         </p>
 
-        <h3>${data.candidate_name || ""}</h3>
+        <h3>${data.name} || ""}</h3>
 
         <p>${data.email || ""}</p>
 
@@ -705,7 +705,7 @@ html+=`
 
 <td>${index+1}</td>
 
-<td>${c.candidate_name || ""}</td>
+<td>${c.name} || ""}</td>
 
 <td>${c.email || ""}</td>
 
