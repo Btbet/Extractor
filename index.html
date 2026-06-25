@@ -198,26 +198,40 @@ Reset Session
     </div>
 
     <!-- Candidate Table -->
-<div class="tableContainer">
+<div class="tableContainer"><table>
 
-    <table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Skills</th>
+            <th>Education</th>
+            <th>Experience</th>
+            <th>Action</th>
+        </tr>
+    </thead>
 
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Skills</th>
-                <th>Education</th>
-                <th>Experience</th>
-                <th>Action</th>
-            </tr>
-        </thead>
+    <tbody id="candidateTable">
+    </tbody>
 
-        <tbody id="candidateTable">
-        </tbody>
+</table>
 
-    </table>
+<div class="pagination" style="margin-top:20px;text-align:center;">
+
+    <button onclick="previousPage()">
+        ◀ Previous
+    </button>
+
+    <span id="pageNumber" style="margin:0 15px;font-weight:bold;">
+        Page 1 of 1
+    </span>
+
+    <button onclick="nextPage()">
+        Next ▶
+    </button>
+
+</div>
 
 </div>
 
