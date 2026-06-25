@@ -223,10 +223,28 @@ async def extract_cv(
 
         print(f"Upload error: {e}")
 
+    try:
+    supabase.table("candidates").insert({
+        "candidate_name": candidate.get("candidate_name"),
+        "email": candidate.get("email"),
+        "phone": candidate.get("phone"),
+        "skills": candidate.get("skills"),
+        "education": candidate.get("education"),
+        "years_experience": candidate.get("years_experience"),
+        "score": candidate.get("score"),
+        "summary": candidate.get("summary"),
+        "cv_hash": candidate.get("cv_hash")
+    }).execute()
+
+       except Exception as e:
+           print(f"Supabase insert error: {e}")
+
         return {
             "error": str(e)
             }
-
+except Exception as e:
+    print(f"Upload error: {e}")
+    return {"error": str(e)}
 
 @app.post("/upload-multiple")
 async def upload_multiple(
