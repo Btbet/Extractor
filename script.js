@@ -493,8 +493,9 @@ console.log(err);
 
 function viewCandidate(index){
 
-const c =
-currentCandidates[index];
+const c = currentCandidates[index];
+
+console.log("Candidate Data:", c);
 
 document.getElementById(
 "candidateDetails"
@@ -507,6 +508,11 @@ document.getElementById(
 <p>
 <strong>Email:</strong>
 ${c.email || "N/A"}
+</p>
+
+<p>
+<strong>Phone:</strong>
+${c.phone || "Not Available"}
 </p>
 
 <p>
@@ -526,7 +532,7 @@ ${(c.education || []).join("<br>")}
 <div>
 ${(c.skills || [])
 .map(
-s=>`<span class="skill">${s}</span>`
+s => `<span class="skill">${s}</span>`
 )
 .join(" ")}
 </div>
@@ -547,8 +553,8 @@ ${c.summary || "No summary available"}
 
 document.getElementById(
 "candidateModal"
-).style.display =
-"block";
+).style.display = "block";
+
 }
 
 function closeModal(){
