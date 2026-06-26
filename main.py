@@ -154,6 +154,7 @@ async def extract_cv(
 
         candidate = extract_cv_data(text)
         candidate["skills"] = detect_skills(text)
+        candidate["summary"] = generate_summary(candidate)
 
         # Clean extracted skills
         candidate["skills"] = clean_skills(
