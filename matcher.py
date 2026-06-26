@@ -359,7 +359,7 @@ def generate_summary(candidate):
     )
 
     return (
-        f"{candidate.get('candidate_name', 'Candidate')} "
+        f"{candidate.get('name', 'Candidate')} "
         f"has {years} years experience "
         f"with skills in {', '.join(short_skills)}."
     )
