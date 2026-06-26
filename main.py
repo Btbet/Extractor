@@ -236,6 +236,26 @@ async def extract_cv(
 
         candidate = extract_cv_data(text)
 
+        # ------------------------------------------
+        # Always store education as an array
+        # ------------------------------------------
+
+        education = candidate.get("education", [])
+
+        if isinstance(education, str):
+
+            education = [education]
+
+        elif education is None:
+
+            education = []
+
+        candidate["education"] = education
+
+        # ------------------------------------------
+        # Skills
+        # ------------------------------------------
+
         candidate["skills"] = detect_skills(text)
 
         candidate["skills"] = clean_skills(
