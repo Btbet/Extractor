@@ -17,14 +17,14 @@ from supabase import create_client
 import os
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(
     SUPABASE_URL,
     SUPABASE_KEY
 )
 print("SUPABASE_URL:", SUPABASE_URL)
-print("SUPABASE_ANON_KEY exists:", SUPABASE_ANON_KEY is not None)
+print("SUPABASE_KEY exists:", SUPABASE_KEY is not None)
 from matcher import (
     extract_job_skills,
     calculate_match_score,
