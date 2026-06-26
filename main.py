@@ -596,15 +596,16 @@ def download_match_pdf():
 @app.get("/export-csv")
 def export_csv():
 
-    with open(DB_FILE,"r") as f:
+    # Read candidates from Supabase
+    response = supabase.table("candidates").select("*").execute()
 
-        candidates=json.load(f)
+    candidates = response.data
 
-    wb=Workbook()
+    wb = Workbook()
 
-    ws=wb.active
+    ws = wb.active
 
-    ws.title="candidates"
+    ws.title = "candidates"
 
     ws.append([
 
@@ -656,7 +657,7 @@ def export_csv():
                     "years_experience",
                     0
                 )
-            )+" years",
+            ) + " years",
 
             c.get(
                 "score",
@@ -665,13 +666,13 @@ def export_csv():
 
         ])
 
-    ws.column_dimensions["A"].width=25
-    ws.column_dimensions["B"].width=35
-    ws.column_dimensions["C"].width=20
-    ws.column_dimensions["D"].width=50
-    ws.column_dimensions["E"].width=35
-    ws.column_dimensions["F"].width=15
-    ws.column_dimensions["G"].width=10
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 35
+    ws.column_dimensions["C"].width = 20
+    ws.column_dimensions["D"].width = 50
+    ws.column_dimensions["E"].width = 35
+    ws.column_dimensions["F"].width = 15
+    ws.column_dimensions["G"].width = 10
 
     wb.save(
         "candidates.xlsx"
@@ -686,24 +687,27 @@ def export_csv():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     )
+
 @app.get("/export-pdf")
 def export_pdf():
 
-    with open(DB_FILE,"r") as f:
-        candidates=json.load(f)
+    # Read candidates from Supabase
+    response = supabase.table("candidates").select("*").execute()
 
-    pdf_file="candidates.pdf"
+    candidates = response.data
 
-    doc=SimpleDocTemplate(
+    pdf_file = "candidates.pdf"
+
+    doc = SimpleDocTemplate(
         pdf_file
     )
 
-    stylesheet=styles.getSampleStyleSheet()
+    stylesheet = styles.getSampleStyleSheet()
 
-    normal=stylesheet["Normal"]
-    title=stylesheet["Title"]
+    normal = stylesheet["Normal"]
+    title = stylesheet["Title"]
 
-    story=[]
+    story = []
 
     story.append(
         Paragraph(
