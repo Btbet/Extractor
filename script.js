@@ -571,57 +571,28 @@ if (currentPage > 1) {
 
 function viewCandidate(index){
 
-    alert("1. View clicked");
-
     const c = currentCandidates[index];
 
-    alert("2. Candidate: " + JSON.stringify(c));
-
-    if(!c){
-        alert("3. Candidate is undefined");
-        return;
-    }
+    if(!c) return;
 
     selectedCandidate = c;
 
     document.getElementById("modalName").textContent =
         c.name || "N/A";
 
-    alert("4. modalName OK");
-
     document.getElementById("modalEmail").textContent =
         c.email || "N/A";
 
-    alert("5. modalEmail OK");
-
-    alert("Education type: " + typeof c.education);
-alert("Education value: " + JSON.stringify(c.education));
-
-let education = [];
-
-if (Array.isArray(c.education)) {
-    education = c.education;
-}
-else if (typeof c.education === "string") {
-    education = [c.education];
-}
-
-document.getElementById("modalEducation").innerHTML =
-    education.join("<br>");
-
-alert("6. modalEducation OK");
-
-    alert("6. modalEducation OK");
+    document.getElementById("modalEducation").innerHTML =
+        Array.isArray(c.education)
+            ? c.education.join("<br>")
+            : (c.education || "N/A");
 
     document.getElementById("modalExperience").textContent =
         `${c.years_experience || 0} years`;
 
-    alert("7. modalExperience OK");
-
     document.getElementById("modalMatch").textContent =
         `${c.job_match_score || 0}%`;
-
-    alert("8. modalMatch OK");
 
     document.getElementById("modalSkills").innerHTML =
         (c.skills || [])
@@ -630,17 +601,11 @@ alert("6. modalEducation OK");
             )
             .join(" ");
 
-    alert("9. modalSkills OK");
-
     document.getElementById("modalSummary").textContent =
         c.summary || "No summary available.";
 
-    alert("10. modalSummary OK");
-
     document.getElementById("candidateModal").style.display =
         "block";
-
-    alert("11. Modal opened");
 }
 
 function downloadCandidatePDF() {
