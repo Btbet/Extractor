@@ -345,7 +345,7 @@ async def upload_multiple(
         "skipped": skipped,
         "count": len(uploaded)
 
-    }== 
+    }
 
 @app.get("/candidates")
 def get_candidates(page: int = 1, limit: int = 10):
