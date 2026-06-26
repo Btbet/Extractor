@@ -380,8 +380,9 @@ def get_candidates(page: int = 1, limit: int = 10):
 @app.get("/search")
 def search(query: str):
 
-    with open(DB_FILE, "r") as f:
-        candidates = json.load(f)
+    response = supabase.table("candidates").select("*").execute()
+
+    candidates = response.data
 
     q = query.strip().lower()
 
@@ -416,11 +417,6 @@ def search(query: str):
         item = candidate.copy()
 
         item["number"] = i
-
-        item.pop(
-            "id",
-            None
-        )
 
         numbered.append(item)
 
@@ -765,26 +761,19 @@ def export_pdf():
     )
 
 @app.post("/match-job")
-def match_job(
-    description:str
-):
+def match_job(description: str):
 
-    with open(
-        DB_FILE,
-        "r"
-    ) as f:
+    # Read candidates from Supabase
+    response = supabase.table("candidates").select("*").execute()
+    candidates = response.data
 
-        candidates=json.load(f)
+    required_skills = extract_job_skills(description)
 
-    required_skills=extract_job_skills(
-        description
-    )
-
-    results=[]
+    results = []
 
     for candidate in candidates:
 
-        result=calculate_match_score(
+        result = calculate_match_score(
 
             candidate.get(
                 "skills",
@@ -795,31 +784,31 @@ def match_job(
 
         )
 
-        candidate_copy=candidate.copy()
+        candidate_copy = candidate.copy()
 
         candidate_copy[
             "job_match_score"
-        ]=result["score"]
+        ] = result["score"]
 
         candidate_copy[
             "matched_skills"
-        ]=result["matched"]
+        ] = result["matched"]
 
         candidate_copy[
             "missing_skills"
-        ]=result["missing"]
+        ] = result["missing"]
 
         candidate_copy[
             "related_skills"
-        ]=result["related"]
+        ] = result["related"]
 
         candidate_copy[
             "comments"
-        ]=result["comments"]
+        ] = result["comments"]
 
         candidate_copy[
             "summary"
-        ]=generate_summary(
+        ] = generate_summary(
             candidate
         )
 
@@ -827,18 +816,17 @@ def match_job(
             candidate_copy
         )
 
-    results=sorted(
+    results = sorted(
 
         results,
 
-        key=lambda x:
-        x["job_match_score"],
+        key=lambda x: x["job_match_score"],
 
         reverse=True
 
     )
 
-    # save matched results for PDF download
+    # Save matched results locally for PDF/DOC export
     with open(
         "matched_results.json",
         "w"
@@ -852,11 +840,9 @@ def match_job(
 
     return {
 
-        "required_skills":
-        required_skills,
+        "required_skills": required_skills,
 
-        "ranked_candidates":
-        results
+        "ranked_candidates": results
 
     }
 
