@@ -197,31 +197,36 @@ Reset Session
     </div>
 
     <!-- Candidate Table -->
-<div class="tableContainer"><table>
+<table class="candidate-table">
 
     <thead>
         <tr>
             <th>No</th>
-            <th>Name</th>
-            <th>Email</th>
+            <th>Candidate</th>
             <th>Skills</th>
-            <th>Education</th>
             <th>Experience</th>
+            <th>Match</th>
             <th>Action</th>
         </tr>
     </thead>
 
     <tbody id="candidateTable">
+        <!-- JavaScript loads candidates here -->
     </tbody>
 
 </table>
+
 <div class="pagination">
     <button onclick="previousPage()">◀ Previous</button>
+
+    <span id="pageNumber">Page 1</span>
 
     <button onclick="nextPage()">Next ▶</button>
 </div>
 
-<!-- Candidate Modal -->
+
+<!-- Candidate Profile Modal -->
+
 <div id="candidateModal" class="modal">
 
     <div class="modal-content">
@@ -232,21 +237,52 @@ Reset Session
 
         <h2>Candidate Profile</h2>
 
-        <div id="candidateDetails"></div>
+        <hr>
+
+        <div class="profile-row">
+            <strong>Name</strong>
+            <span id="modalName"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Email</strong>
+            <span id="modalEmail"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Education</strong>
+            <span id="modalEducation"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Experience</strong>
+            <span id="modalExperience"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Match Score</strong>
+            <span id="modalMatch" class="match-score"></span>
+        </div>
+
+        <div class="profile-row">
+            <strong>Skills</strong>
+
+            <div id="modalSkills"></div>
+        </div>
+
+        <div class="profile-row">
+            <strong>AI Summary</strong>
+
+            <p id="modalSummary"></p>
+        </div>
 
         <button
             id="downloadPdfBtn"
-            onclick="downloadCandidatePDF()"
-            style="
-                margin-top:15px;
-                background:#28a745;
-                color:white;
-                border:none;
-                padding:10px 15px;
-                border-radius:5px;
-                cursor:pointer;
-            ">
+            class="download-btn"
+            onclick="downloadCandidatePDF()">
+
             Download Profile PDF
+
         </button>
 
     </div>
