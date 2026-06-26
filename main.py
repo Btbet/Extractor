@@ -40,12 +40,14 @@ def detect_skills(text):
 
     text = text.lower()
 
+    for alias, official in SKILL_SYNONYMS.items():
+        text = text.replace(alias, official.lower())
+
     for skill in TECHNICAL_SKILLS:
 
         pattern = r"\b" + re.escape(skill.lower()) + r"\b"
 
         if re.search(pattern, text):
-
             found.append(skill)
 
     return sorted(list(set(found)))
