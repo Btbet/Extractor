@@ -119,7 +119,6 @@ if not os.path.exists(DB_FILE):
     with open(DB_FILE, "w") as f:
         json.dump([], f)
 
-
 @app.get("/health")
 async def health():
     return {
@@ -841,9 +840,12 @@ def match_job(description: str):
 @app.get("/debug-candidates")
 def debug_candidates():
 
-    with open(DB_FILE, "r") as f:
-        return json.load(f)
+    response = supabase.table(
+        "candidates"
+    ).select("*").execute()
 
+    return response.data
+    
 @app.delete("/reset_session")
 def reset_session():
 
