@@ -430,26 +430,42 @@ def get_candidates(page: int = 1, limit: int = 10):
 @app.get("/search")
 def search(query: str):
 
-    q = query.strip()
+    q = query.strip().lower()
 
+    # Search by name in Supabase
     response = (
         supabase.table("candidates")
         .select("*")
-        .or_(
-            f"name.ilike.%{q}%,skills.ilike.%{q}%"
-        )
+        .ilike("name", f"%{q}%")
         .execute()
     )
 
-    candidates = response.data or []
+    results = response.data or []
 
-    for i, candidate in enumerate(
-        candidates,
-        start=1
-    ):
+    # Search skills in Python
+    response = (
+        supabase.table("candidates")
+        .select("*")
+        .execute()
+    )
+
+    for candidate in response.data:
+
+        if candidate in results:
+            continue
+
+        skills = candidate.get("skills", [])
+
+        if isinstance(skills, str):
+            skills = [skills]
+
+        if any(q in skill.lower() for skill in skills):
+            results.append(candidate)
+
+    for i, candidate in enumerate(results, start=1):
         candidate["number"] = i
 
-    return candidates
+    return results
 @app.get("/download-match-doc")
 def download_match_doc():
 
