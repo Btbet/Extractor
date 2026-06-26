@@ -174,6 +174,34 @@ async function uploadSingle(){
         let data =
             await response.json();
 
+        // Validation failed
+        if(data.error){
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = `
+                <p style="
+                    color:red;
+                    font-weight:bold;
+                ">
+                ❌ ${data.error}
+                </p>
+            `;
+
+            fileInput.value = "";
+
+            setTimeout(() => {
+
+                document.getElementById(
+                    "singleResult"
+                ).innerHTML = "";
+
+            }, 5000);
+
+            return;
+        }
+
+        // Upload successful
         document.getElementById(
             "singleResult"
         ).innerHTML = `
@@ -186,19 +214,18 @@ async function uploadSingle(){
         ✅ CV Uploaded Successfully
         </p>
 
-        <h3>${data.name} || ""}</h3>
+        <h3>${data.name || ""}</h3>
 
         <p>${data.email || ""}</p>
 
         `;
 
-        /* Clear selected file */
         fileInput.value = "";
 
         loadStats();
+
         loadCandidates();
 
-        /* Remove success message + candidate details after 3 seconds */
         setTimeout(() => {
 
             document.getElementById(
@@ -224,16 +251,18 @@ async function uploadSingle(){
             </p>
         `;
 
+        fileInput.value = "";
+
         setTimeout(() => {
 
             document.getElementById(
                 "singleResult"
             ).innerHTML = "";
 
-        }, 3000);
+        }, 5000);
+
     }
 }
-
 function addCV(){
 
     let files =
