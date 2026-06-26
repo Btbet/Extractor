@@ -194,7 +194,6 @@ async function uploadSingle(){
             `;
 
             loadStats();
-
             loadCandidates();
 
         }
@@ -224,6 +223,21 @@ async function uploadSingle(){
                     font-weight:bold;
                 ">
                 ❌ Invalid CV or Resume
+                </p>
+            `;
+
+        }
+
+        else if(data.status === "failed"){
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = `
+                <p style="
+                    color:red;
+                    font-weight:bold;
+                ">
+                ❌ Upload Failed
                 </p>
             `;
 
@@ -383,44 +397,59 @@ async function uploadMultiple(){
         let data =
             await response.json();
 
-        if(!response.ok){
-
-            document.getElementById(
-                "selectedFiles"
-            ).innerHTML = `
-            <p style="
-                color:red;
-                font-weight:bold;
-                padding:10px;
-            ">
-            ❌ Upload Failed
-            </p>
-            `;
+        if(data.status !== "completed"){
 
             return;
+
         }
 
         document.getElementById(
             "selectedFiles"
         ).innerHTML = `
-        <p style="
-            color:green;
-            font-weight:bold;
+        <div style="
             padding:10px;
+            line-height:1.8;
         ">
-        ✅ ${data.count} CV(s) uploaded successfully
-        </p>
 
-        <p>
-            Uploaded: ${data.uploaded.length}<br>
-            Skipped: ${data.skipped.length}
-        </p>
+            <p style="
+                color:green;
+                font-weight:bold;
+            ">
+            ✅ Uploaded: ${data.saved_count}
+            </p>
+
+            <p style="
+                color:orange;
+                font-weight:bold;
+            ">
+            ⚠ Duplicates: ${data.duplicate_count}
+            </p>
+
+            <p style="
+                color:red;
+                font-weight:bold;
+            ">
+            ❌ Rejected: ${data.rejected_count}
+            </p>
+
+            <p style="
+                color:#555;
+                font-weight:bold;
+            ">
+            ⚙ Failed: ${data.failed_count}
+            </p>
+
+            <hr>
+
+            <p>
+            Total Files: ${data.total_processed}
+            </p>
+
+        </div>
         `;
 
-        // Clear stored files
         selectedCVs = [];
 
-        // Clear file input
         document.getElementById(
             "multipleCV"
         ).value = "";
@@ -435,7 +464,7 @@ async function uploadMultiple(){
                 "selectedFiles"
             ).innerHTML = "";
 
-        }, 6000);
+        }, 7000);
 
     }
 
@@ -443,27 +472,8 @@ async function uploadMultiple(){
 
         console.log(err);
 
-        document.getElementById(
-            "selectedFiles"
-        ).innerHTML = `
-        <p style="
-            color:red;
-            font-weight:bold;
-            padding:10px;
-        ">
-        ❌ Upload Failed
-        </p>
-        `;
-
-        setTimeout(() => {
-
-            document.getElementById(
-                "selectedFiles"
-            ).innerHTML = "";
-
-        }, 5000);
-
     }
+
 }
 
 async function loadCandidates() {
