@@ -594,8 +594,22 @@ function viewCandidate(index){
 
     alert("5. modalEmail OK");
 
-    document.getElementById("modalEducation").innerHTML =
-        (c.education || []).join("<br>");
+    alert("Education type: " + typeof c.education);
+alert("Education value: " + JSON.stringify(c.education));
+
+let education = [];
+
+if (Array.isArray(c.education)) {
+    education = c.education;
+}
+else if (typeof c.education === "string") {
+    education = [c.education];
+}
+
+document.getElementById("modalEducation").innerHTML =
+    education.join("<br>");
+
+alert("6. modalEducation OK");
 
     alert("6. modalEducation OK");
 
