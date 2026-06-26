@@ -920,16 +920,30 @@ def reset_session():
 @app.get("/total-uploads")
 def total_uploads():
 
-    response = (
+    # Get total uploads from stats table
+    stats = (
+        supabase.table("stats")
+        .select("total_uploads")
+        .eq("id", 1)
+        .single()
+        .execute()
+    )
+
+    total_uploads = 0
+
+    if stats.data:
+        total_uploads = stats.data["total_uploads"]
+
+    # Get unique candidates
+    candidates = (
         supabase.table("candidates")
         .select("*", count="exact")
         .execute()
     )
 
-    total = response.count
+    total_candidates = candidates.count
 
     return {
-        "total_uploads": total,
-        "total_candidates": total
+        "total_uploads": total_uploads,
+        "total_candidates": total_candidates
     }
-   
