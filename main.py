@@ -134,6 +134,11 @@ async def extract_cv(
 
         candidate = extract_cv_data(text)
 
+        # Clean extracted skills
+        candidate["skills"] = clean_skills(
+            candidate.get("skills", [])
+        )
+
         candidate["summary"] = generate_summary(candidate)
 
         cv_hash = hashlib.sha256(
@@ -142,23 +147,19 @@ async def extract_cv(
 
         candidate["cv_hash"] = cv_hash
 
-        # Count every upload in Supabase
-        stats = supabase.table(
-            "stats"
-        ).select(
-            "total_uploads"
-        ).eq(
-            "id",
-            1
-        ).execute()
+        # Count every upload
+        stats = (
+            supabase.table("stats")
+            .select("total_uploads")
+            .eq("id", 1)
+            .execute()
+        )
 
         if stats.data:
 
             current_uploads = stats.data[0]["total_uploads"]
 
-            supabase.table(
-                "stats"
-            ).update(
+            supabase.table("stats").update(
                 {
                     "total_uploads": current_uploads + 1
                 }
@@ -169,21 +170,21 @@ async def extract_cv(
 
         else:
 
-            supabase.table(
-                "stats"
-            ).insert(
+            supabase.table("stats").insert(
                 {
                     "id": 1,
                     "total_uploads": 1
                 }
             ).execute()
 
-        # Check for duplicate candidate
+        # Check duplicate
         duplicate = False
 
-        response = supabase.table(
-            "candidates"
-        ).select("*").execute()
+        response = (
+            supabase.table("candidates")
+            .select("*")
+            .execute()
+        )
 
         for c in response.data:
 
@@ -204,15 +205,12 @@ async def extract_cv(
             ):
 
                 duplicate = True
-
                 break
 
-        # Save if not duplicate
+        # Save only if not duplicate
         if not duplicate:
 
-            supabase.table(
-                "candidates"
-            ).insert({
+            supabase.table("candidates").insert({
 
                 "name": candidate.get("name"),
 
