@@ -349,23 +349,25 @@ async def upload_multiple(
 
 @app.get("/candidates")
 def get_candidates(page: int = 1, limit: int = 10):
-    with open(DB_FILE, "r") as f:
-        candidates = json.load(f)
-
-    total = len(candidates)
 
     start = (page - 1) * limit
-    end = start + limit
+    end = start + limit - 1
 
-    page_candidates = candidates[start:end]
+    response = (
+        supabase.table("candidates")
+        .select("*", count="exact")
+        .range(start, end)
+        .execute()
+    )
+
+    candidates = response.data
+    total = response.count
 
     output = []
 
-    for i, candidate in enumerate(page_candidates, start=start + 1):
-        item = candidate.copy()
-        item["number"] = i
-        item.pop("id", None)
-        output.append(item)
+    for i, candidate in enumerate(candidates, start=start + 1):
+        candidate["number"] = i
+        output.append(candidate)
 
     return {
         "total": total,
@@ -898,19 +900,16 @@ def reset_session():
 @app.get("/total-uploads")
 def total_uploads():
 
-    with open(DB_FILE, "r") as f:
-        candidates = json.load(f)
+    response = (
+        supabase.table("candidates")
+        .select("*", count="exact")
+        .execute()
+    )
 
-    with open(STATS_FILE, "r") as f:
-        stats = json.load(f)
+    total = response.count
 
     return {
-
-        "total_uploads":
-        stats["total_uploads"],
-
-        "total_candidates":
-        len(candidates)
-
+        "total_uploads": total,
+        "total_candidates": total
     }
    
