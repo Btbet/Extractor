@@ -460,10 +460,6 @@ async function loadCandidates() {
                 </td>
 
                 <td>
-                    ${c.job_match_score || 0}%
-                </td>
-
-                <td>
                     <button
                         class="load-btn"
                         onclick="viewCandidate(${index})">
