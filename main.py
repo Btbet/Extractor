@@ -209,7 +209,11 @@ async def extract_cv(
         if sum(checks) < 3:
 
             return {
-                "status": "rejected"
+
+                "status": "rejected",
+
+                "message": "Invalid CV"
+
             }
 
         # ------------------------------------------
@@ -265,7 +269,11 @@ async def extract_cv(
             ):
 
                 return {
-                    "status": "duplicate"
+
+                    "status": "duplicate",
+
+                    "message": "Duplicate CV"
+
                 }
 
         # ------------------------------------------
@@ -296,9 +304,19 @@ async def extract_cv(
 
         }).execute()
 
+        # ------------------------------------------
+        # Success
+        # ------------------------------------------
+
         return {
 
             "status": "success",
+
+            "message": "CV Uploaded Successfully",
+
+            "name": candidate.get("name"),
+
+            "email": candidate.get("email"),
 
             "candidate": candidate
 
@@ -306,7 +324,6 @@ async def extract_cv(
 
     except Exception as e:
 
-        # Only visible in Render logs
         print(f"Upload error: {e}")
 
         return {
@@ -314,14 +331,16 @@ async def extract_cv(
             "status": "failed"
 
         }
-        
+
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
 ):
 
     uploaded = []
-    skipped = []
+    duplicates = []
+    rejected = []
+    failed = []
 
     for file in files:
 
@@ -374,7 +393,7 @@ async def upload_multiple(
 
             if sum(checks) < 3:
 
-                skipped.append(file.filename)
+                rejected.append(file.filename)
 
                 continue
 
@@ -435,35 +454,39 @@ async def upload_multiple(
                     duplicate = True
                     break
 
+            if duplicate:
+
+                duplicates.append(file.filename)
+
+                continue
+
             # ------------------------------------------
-            # Save only if unique
+            # Save candidate
             # ------------------------------------------
 
-            if not duplicate:
+            supabase.table("candidates").insert({
 
-                supabase.table("candidates").insert({
+                "name": candidate.get("name"),
 
-                    "name": candidate.get("name"),
+                "email": candidate.get("email"),
 
-                    "email": candidate.get("email"),
+                "phone": candidate.get("phone"),
 
-                    "phone": candidate.get("phone"),
+                "skills": candidate.get("skills"),
 
-                    "skills": candidate.get("skills"),
+                "education": candidate.get("education"),
 
-                    "education": candidate.get("education"),
+                "years_experience": candidate.get(
+                    "years_experience"
+                ),
 
-                    "years_experience": candidate.get(
-                        "years_experience"
-                    ),
+                "score": candidate.get("score"),
 
-                    "score": candidate.get("score"),
+                "summary": candidate.get("summary"),
 
-                    "summary": candidate.get("summary"),
+                "cv_hash": candidate.get("cv_hash")
 
-                    "cv_hash": candidate.get("cv_hash")
-
-                }).execute()
+            }).execute()
 
             uploaded.append(file.filename)
 
@@ -471,17 +494,31 @@ async def upload_multiple(
 
             print(f"Error in {file.filename}: {e}")
 
-            skipped.append(file.filename)
+            failed.append(file.filename)
 
     return {
 
-        "message": "Upload complete",
+        "status": "completed",
+
+        "message": "Upload Complete",
 
         "uploaded": uploaded,
 
-        "skipped": skipped,
+        "duplicates": duplicates,
 
-        "count": len(uploaded)
+        "rejected": rejected,
+
+        "failed": failed,
+
+        "saved_count": len(uploaded),
+
+        "duplicate_count": len(duplicates),
+
+        "rejected_count": len(rejected),
+
+        "failed_count": len(failed),
+
+        "total_processed": len(files)
 
     }
 
