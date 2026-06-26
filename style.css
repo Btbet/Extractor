@@ -344,6 +344,39 @@ background:#6f4518;
     background:#7c3aed;
     transform:translateY(-2px);
 }
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.pagination button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 8px;
+}
+
+.pagination button:first-child {
+    background-color: #7c3aed; /* Purple */
+}
+
+.pagination button:first-child:hover {
+    background-color: #6d28d9;
+}
+
+.pagination button:last-child {
+    background-color: #f97316; /* Orange */
+}
+
+.pagination button:last-child:hover {
+    background-color: #ea580c;
+}
 /* EXISTING CODE CONTINUES */
 
 input,
