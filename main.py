@@ -234,7 +234,7 @@ async def extract_cv(
         }
 
 
-@@app.post("/upload-multiple")
+@app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
 ):
