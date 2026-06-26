@@ -166,13 +166,14 @@ async def extract_cv(
                 indent=4
             )
 
-        # Load candidates from local JSON
-        with open(DB_FILE, "r") as f:
-            data = json.load(f)
-
+        # Check duplicate from Supabase
         duplicate = False
 
-        for c in data:
+        response = supabase.table(
+            "candidates"
+        ).select("*").execute()
+
+        for c in response.data:
 
             if (
                 (
@@ -189,39 +190,33 @@ async def extract_cv(
                     == candidate["cv_hash"]
                 )
             ):
-
-                c.update(candidate)
                 duplicate = True
                 break
 
+        # Save to Supabase only if not duplicate
         if not duplicate:
-            candidate["id"] = len(data) + 1
-            data.append(candidate)
 
-        # Save locally
-        with open(DB_FILE, "w") as f:
-            json.dump(
-                data,
-                f,
-                indent=4
-            )
-
-        # Save to Supabase
-        try:
             supabase.table("candidates").insert({
-                "name": candidate.get("name"),
-                "email": candidate.get("email"),
-                "phone": candidate.get("phone"),
-                "skills": candidate.get("skills"),
-                "education": candidate.get("education"),
-                "years_experience": candidate.get("years_experience"),
-                "score": candidate.get("score"),
-                "summary": candidate.get("summary"),
-                "cv_hash": candidate.get("cv_hash")
-            }).execute()
 
-        except Exception as e:
-            print(f"Supabase insert error: {e}")
+                "name": candidate.get("name"),
+
+                "email": candidate.get("email"),
+
+                "phone": candidate.get("phone"),
+
+                "skills": candidate.get("skills"),
+
+                "education": candidate.get("education"),
+
+                "years_experience": candidate.get("years_experience"),
+
+                "score": candidate.get("score"),
+
+                "summary": candidate.get("summary"),
+
+                "cv_hash": candidate.get("cv_hash")
+
+            }).execute()
 
         return candidate
 
@@ -238,9 +233,6 @@ async def extract_cv(
 async def upload_multiple(
     files: List[UploadFile] = File(...)
 ):
-
-    with open(DB_FILE, "r") as f:
-        data = json.load(f)
 
     uploaded = []
     skipped = []
@@ -274,9 +266,14 @@ async def upload_multiple(
                     indent=4
                 )
 
+            # Check duplicate in Supabase
             duplicate = False
 
-            for c in data:
+            response = supabase.table(
+                "candidates"
+            ).select("*").execute()
+
+            for c in response.data:
 
                 if (
                     (
@@ -294,28 +291,34 @@ async def upload_multiple(
                     )
                 ):
 
-                    c.update(candidate)
                     duplicate = True
                     break
 
+            # Save to Supabase only if not duplicate
             if not duplicate:
 
-                candidate["id"] = len(data) + 1
-                data.append(candidate)
-
-                # Save to Supabase
                 try:
 
                     supabase.table("candidates").insert({
+
                         "name": candidate.get("name"),
+
                         "email": candidate.get("email"),
+
                         "phone": candidate.get("phone"),
+
                         "skills": candidate.get("skills"),
+
                         "education": candidate.get("education"),
+
                         "years_experience": candidate.get("years_experience"),
+
                         "score": candidate.get("score"),
+
                         "summary": candidate.get("summary"),
+
                         "cv_hash": candidate.get("cv_hash")
+
                     }).execute()
 
                 except Exception as e:
@@ -330,19 +333,14 @@ async def upload_multiple(
 
             skipped.append(file.filename)
 
-    with open(DB_FILE, "w") as f:
-
-        json.dump(
-            data,
-            f,
-            indent=4
-        )
-
     return {
 
         "message": "Upload complete",
+
         "uploaded": uploaded,
+
         "skipped": skipped,
+
         "count": len(uploaded)
 
     }
