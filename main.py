@@ -17,6 +17,7 @@ from supabase import create_client
 import os
 import re
 from skills_db import TECHNICAL_SKILLS
+from skills_db import TECHNICAL_SKILLS, SKILL_SYNONYMS
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
