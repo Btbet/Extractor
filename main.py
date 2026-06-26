@@ -271,23 +271,27 @@ async def upload_multiple(
             candidate["cv_hash"] = cv_hash
 
             # Count every upload in Supabase
-stats = supabase.table("stats").select(
-    "total_uploads"
-).eq(
-    "id",
-    1
-).single().execute()
+            stats = supabase.table(
+                "stats"
+            ).select(
+                "total_uploads"
+            ).eq(
+                "id",
+                1
+            ).single().execute()
 
-current_uploads = stats.data["total_uploads"]
+            current_uploads = stats.data["total_uploads"]
 
-supabase.table("stats").update(
-    {
-        "total_uploads": current_uploads + 1
-    }
-).eq(
-    "id",
-    1
-).execute()
+            supabase.table(
+                "stats"
+            ).update(
+                {
+                    "total_uploads": current_uploads + 1
+                }
+            ).eq(
+                "id",
+                1
+            ).execute()
 
             # Check duplicate in Supabase
             duplicate = False
@@ -322,7 +326,9 @@ supabase.table("stats").update(
 
                 try:
 
-                    supabase.table("candidates").insert({
+                    supabase.table(
+                        "candidates"
+                    ).insert({
 
                         "name": candidate.get("name"),
 
