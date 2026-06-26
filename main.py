@@ -53,6 +53,20 @@ def detect_skills(text):
 
     return sorted(list(set(found)))
 
+def clean_skills(skills):
+
+    cleaned = []
+
+    for skill in skills:
+
+        skill = skill.strip()
+
+        if skill and skill not in cleaned:
+
+            cleaned.append(skill)
+
+    return sorted(cleaned)
+
 app = FastAPI()
 candidates_db = []
 
