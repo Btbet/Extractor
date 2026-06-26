@@ -422,77 +422,72 @@ async function uploadMultiple(){
 
 async function loadCandidates() {
 
-try {
+    try {
 
-    let response = await fetch(
-        `/candidates?page=${currentPage}&limit=${pageSize}`
-    );
+        const response = await fetch(
+            `/candidates?page=${currentPage}&limit=${pageSize}`
+        );
 
-    let data = await response.json();
+        const data = await response.json();
 
-    currentCandidates = data.candidates;
+        currentCandidates = data.candidates || [];
+        totalPages = data.pages || 1;
 
-    totalPages = data.pages;
+        let html = "";
 
-    let html = "";
+        currentCandidates.forEach((c, index) => {
 
-    currentCandidates.forEach((c, index) => {
+            html += `
+            <tr>
 
-        html += `
+                <td>${c.number || index + 1}</td>
 
-        <tr>
+                <td>
+                    <strong>${c.name || "Unknown"}</strong><br>
+                    <small>${c.email || ""}</small>
+                </td>
 
-            <td>${c.number}</td>
+                <td>
+                    ${(c.skills || [])
+                        .slice(0,3)
+                        .map(skill =>
+                            `<span class="skill">${skill}</span>`
+                        ).join(" ")}
+                </td>
 
-            <td>${c.name || ""}</td>
+                <td>
+                    ${c.years_experience || 0} yrs
+                </td>
 
-            <td>${c.email || ""}</td>
+                <td>
+                    ${c.job_match_score || 0}%
+                </td>
 
-            <td>
+                <td>
+                    <button
+                        class="load-btn"
+                        onclick="viewCandidate(${index})">
+                        View
+                    </button>
+                </td>
 
-                ${(c.skills || [])
-                    .slice(0, 5)
-                    .map(
-                        s => `<span class="skill">${s}</span>`
-                    )
-                    .join("")}
+            </tr>
+            `;
 
-            </td>
+        });
 
-            <td>
-                ${(c.education || []).join(", ")}
-            </td>
+        document.getElementById("candidateTable").innerHTML = html;
 
-            <td>
-                ${c.years_experience || 0} years
-            </td>
+        document.getElementById("pageNumber").innerText =
+            `Page ${currentPage} of ${totalPages}`;
 
-            <td>
-                <button
-                    class="load-btn"
-                    onclick="viewCandidate(${index})">
-                    View
-                </button>
-            </td>
+    }
 
-        </tr>
+    catch(err){
 
-        `;
+        console.log(err);
 
-    });
-
-    document.getElementById("candidateTable").innerHTML = html;
-
-    document.getElementById("pageNumber").innerText =
-        `Page ${currentPage} of ${totalPages}`;
-
-}
-
-catch (err) {
-
-    console.log(err);
-
-}
+    }
 
 }
 
@@ -526,67 +521,38 @@ function viewCandidate(index){
 
     const c = currentCandidates[index];
 
+    if(!c) return;
+
     selectedCandidate = c;
 
-    console.log("Candidate Data:", c);
+    document.getElementById("modalName").textContent =
+        c.name || "N/A";
 
-    document.getElementById(
-        "candidateDetails"
-    ).innerHTML = `
+    document.getElementById("modalEmail").textContent =
+        c.email || "N/A";
 
-    <div style="line-height:1.8;">
+    document.getElementById("modalEducation").innerHTML =
+        (c.education || []).join("<br>");
 
-        <h2>${c.name || "Unknown Candidate"}</h2>
+    document.getElementById("modalExperience").textContent =
+        `${c.years_experience || 0} years`;
 
-        <p>
-        <strong>Email:</strong>
-        ${c.email || "N/A"}
-        </p>
+    document.getElementById("modalMatch").textContent =
+        `${c.job_match_score || 0}%`;
 
-        <p>
-        <strong>Phone:</strong>
-        ${c.phone || "Not Available"}
-        </p>
+    document.getElementById("modalSkills").innerHTML =
+        (c.skills || [])
+        .map(skill =>
+            `<span class="skill">${skill}</span>`
+        )
+        .join(" ");
 
-        <p>
-        <strong>Experience:</strong>
-        ${c.years_experience || 0} years
-        </p>
+    document.getElementById("modalSummary").textContent =
+        c.summary || "No summary available.";
 
-        <p>
-        <strong>Education:</strong><br>
-        ${(c.education || []).join("<br>")}
-        </p>
+    document.getElementById("candidateModal").style.display =
+        "block";
 
-        <p>
-        <strong>Skills:</strong>
-        </p>
-
-        <div>
-        ${(c.skills || [])
-            .map(
-                s => `<span class="skill">${s}</span>`
-            )
-            .join(" ")}
-        </div>
-
-        <hr>
-
-        <p>
-        <strong>AI Summary:</strong>
-        </p>
-
-        <p>
-        ${c.summary || "No summary available"}
-        </p>
-
-    </div>
-
-    `;
-
-    document.getElementById(
-        "candidateModal"
-    ).style.display = "block";
 }
 
 function downloadCandidatePDF() {
@@ -734,80 +700,69 @@ modal.style.display =
 
 async function searchCandidate(){
 
-let q=
-document.getElementById(
-"searchText"
-).value;
+    const q = document.getElementById("searchText").value;
 
-try{
+    try{
 
-let response=
-await fetch(
-`/search?query=${q}`
-);
+        const response =
+            await fetch(`/search?query=${encodeURIComponent(q)}`);
 
-let data=
-await response.json();
+        const data = await response.json();
 
-let html="";
+        currentCandidates = data;
 
-data.forEach(
+        let html = "";
 
-(c,index)=>{
+        data.forEach((c,index)=>{
 
-html+=`
+            html += `
+            <tr>
 
-<tr>
+                <td>${index+1}</td>
 
-<td>${index+1}</td>
+                <td>
+                    <strong>${c.name || ""}</strong><br>
+                    <small>${c.email || ""}</small>
+                </td>
 
-<td>${c.name} || ""}</td>
+                <td>
+                    ${(c.skills || [])
+                        .slice(0,3)
+                        .map(skill =>
+                            `<span class="skill">${skill}</span>`
+                        ).join(" ")}
+                </td>
 
-<td>${c.email || ""}</td>
+                <td>
+                    ${c.years_experience || 0} yrs
+                </td>
 
-<td>
+                <td>
+                    ${c.job_match_score || 0}%
+                </td>
 
-${(c.skills || [])
-.map(
-s=>`<span class="skill">${s}</span>`
-)
-.join("")}
+                <td>
+                    <button
+                        class="load-btn"
+                        onclick="viewCandidate(${index})">
+                        View
+                    </button>
+                </td>
 
-</td>
+            </tr>
+            `;
 
-<td>
+        });
 
-${(c.education || [])
-.join(", ")}
+        document.getElementById("candidateTable").innerHTML = html;
 
-</td>
+    }
 
-<td>
+    catch(err){
 
-${c.years_experience || 0}
-years
+        console.log(err);
 
-</td>
-
-</tr>
-
-`;
-
-}
-
-);
-
-document.getElementById(
-"candidateTable"
-).innerHTML=html;
-
-}
-
-catch(err){
-
-console.log(err);
-
-}
+    }
 
 }
 
