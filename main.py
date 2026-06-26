@@ -53,6 +53,96 @@ def detect_skills(text):
 
     return sorted(list(set(found)))
 
+
+def extract_skills_section(text: str):
+    """
+    Extract skills directly from the Skills section of the CV.
+    Falls back to detect_skills() if no section is found.
+    """
+
+    lines = text.splitlines()
+
+    skills = []
+    collecting = False
+
+    stop_headers = [
+        "experience",
+        "education",
+        "project",
+        "projects",
+        "employment",
+        "certification",
+        "certifications",
+        "reference",
+        "references",
+        "summary",
+        "profile",
+        "objective",
+        "languages",
+        "interests"
+    ]
+
+    for line in lines:
+
+        current = line.strip()
+
+        if not current:
+            continue
+
+        lower = current.lower()
+
+        # Start collecting after Skills header
+        if lower in [
+            "skills",
+            "technical skills",
+            "core skills",
+            "key skills",
+            "competencies"
+        ]:
+            collecting = True
+            continue
+
+        if collecting:
+
+            # Stop when another section begins
+            if any(
+                lower.startswith(header)
+                for header in stop_headers
+            ):
+                break
+
+            # Split commas, bullets, pipes, semicolons
+            parts = re.split(
+                r"[•,\|\;/]+",
+                current
+            )
+
+            for part in parts:
+
+                skill = part.strip()
+
+                if len(skill) >= 2:
+                    skills.append(skill)
+
+    # Clean duplicates
+    cleaned = []
+
+    seen = set()
+
+    for skill in skills:
+
+        key = skill.lower()
+
+        if key not in seen:
+            cleaned.append(skill)
+            seen.add(key)
+
+    # Fall back to keyword detector
+    if not cleaned:
+        cleaned = detect_skills(text)
+
+    return cleaned
+
 def clean_skills(skills):
 
     cleaned = []
@@ -256,11 +346,9 @@ async def extract_cv(
         # Skills
         # ------------------------------------------
 
-        candidate["skills"] = detect_skills(text)
-
+        candidate["skills"] = extract_skills_section(text)
         candidate["skills"] = clean_skills(
-            candidate.get("skills", [])
-        )
+          candidate["skills"])
 
         candidate["summary"] = generate_summary(candidate)
 
