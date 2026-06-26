@@ -234,7 +234,7 @@ async def extract_cv(
         }
 
 
-@app.post("/upload-multiple")
+@@app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
 ):
@@ -279,50 +279,56 @@ async def upload_multiple(
             for c in data:
 
                 if (
-
                     (
                         c.get("email")
                         and candidate.get("email")
                         and c["email"].lower()
                         == candidate["email"].lower()
                     )
-
                     or
-
                     (
                         c.get("cv_hash")
                         and candidate.get("cv_hash")
                         and c["cv_hash"]
                         == candidate["cv_hash"]
                     )
-
                 ):
 
                     c.update(candidate)
-
                     duplicate = True
-
                     break
 
             if not duplicate:
 
                 candidate["id"] = len(data) + 1
-
                 data.append(candidate)
 
-            uploaded.append(
-                file.filename
-            )
+                # Save to Supabase
+                try:
+
+                    supabase.table("candidates").insert({
+                        "name": candidate.get("name"),
+                        "email": candidate.get("email"),
+                        "phone": candidate.get("phone"),
+                        "skills": candidate.get("skills"),
+                        "education": candidate.get("education"),
+                        "years_experience": candidate.get("years_experience"),
+                        "score": candidate.get("score"),
+                        "summary": candidate.get("summary"),
+                        "cv_hash": candidate.get("cv_hash")
+                    }).execute()
+
+                except Exception as e:
+
+                    print(f"Supabase insert error: {e}")
+
+            uploaded.append(file.filename)
 
         except Exception as e:
 
-            print(
-                f"Error in {file.filename}: {e}"
-            )
+            print(f"Error in {file.filename}: {e}")
 
-            skipped.append(
-                file.filename
-            )
+            skipped.append(file.filename)
 
     with open(DB_FILE, "w") as f:
 
@@ -335,15 +341,11 @@ async def upload_multiple(
     return {
 
         "message": "Upload complete",
-
         "uploaded": uploaded,
-
         "skipped": skipped,
-
         "count": len(uploaded)
 
-    }
-
+    }== 
 
 @app.get("/candidates")
 def get_candidates(page: int = 1, limit: int = 10):
