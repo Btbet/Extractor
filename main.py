@@ -153,12 +153,15 @@ async def extract_cv(
 ):
     try:
 
+        # ------------------------------------------
         # Read text
+        # ------------------------------------------
+
         text = await extract_text_from_file(file)
 
-        # --------------------------------------------------
+        # ------------------------------------------
         # Count every upload
-        # --------------------------------------------------
+        # ------------------------------------------
 
         stats = (
             supabase.table("stats")
@@ -185,9 +188,9 @@ async def extract_cv(
                 "total_uploads": 1
             }).execute()
 
-        # --------------------------------------------------
+        # ------------------------------------------
         # Validate document
-        # --------------------------------------------------
+        # ------------------------------------------
 
         text_lower = text.lower()
 
@@ -206,12 +209,12 @@ async def extract_cv(
         if sum(checks) < 3:
 
             return {
-                "error": "This file does not appear to be a valid CV or resume."
+                "status": "rejected"
             }
 
-        # --------------------------------------------------
+        # ------------------------------------------
         # Extract candidate
-        # --------------------------------------------------
+        # ------------------------------------------
 
         candidate = extract_cv_data(text)
 
@@ -229,11 +232,9 @@ async def extract_cv(
 
         candidate["cv_hash"] = cv_hash
 
-        # --------------------------------------------------
+        # ------------------------------------------
         # Check duplicate
-        # --------------------------------------------------
-
-        duplicate = False
+        # ------------------------------------------
 
         response = (
             supabase.table("candidates")
@@ -263,48 +264,57 @@ async def extract_cv(
 
             ):
 
-                duplicate = True
-                break
+                return {
+                    "status": "duplicate"
+                }
 
-        # --------------------------------------------------
-        # Save only if unique
-        # --------------------------------------------------
+        # ------------------------------------------
+        # Save candidate
+        # ------------------------------------------
 
-        if not duplicate:
+        supabase.table("candidates").insert({
 
-            supabase.table("candidates").insert({
+            "name": candidate.get("name"),
 
-                "name": candidate.get("name"),
+            "email": candidate.get("email"),
 
-                "email": candidate.get("email"),
+            "phone": candidate.get("phone"),
 
-                "phone": candidate.get("phone"),
+            "skills": candidate.get("skills"),
 
-                "skills": candidate.get("skills"),
+            "education": candidate.get("education"),
 
-                "education": candidate.get("education"),
+            "years_experience": candidate.get(
+                "years_experience"
+            ),
 
-                "years_experience": candidate.get(
-                    "years_experience"
-                ),
+            "score": candidate.get("score"),
 
-                "score": candidate.get("score"),
+            "summary": candidate.get("summary"),
 
-                "summary": candidate.get("summary"),
+            "cv_hash": candidate.get("cv_hash")
 
-                "cv_hash": candidate.get("cv_hash")
+        }).execute()
 
-            }).execute()
+        return {
 
-        return candidate
+            "status": "success",
+
+            "candidate": candidate
+
+        }
 
     except Exception as e:
 
+        # Only visible in Render logs
         print(f"Upload error: {e}")
 
         return {
-            "error": str(e)
+
+            "status": "failed"
+
         }
+        
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
