@@ -341,14 +341,17 @@ async def extract_cv(
             education = []
 
         candidate["education"] = education
+    # ----------------------------
+# Skills
+# ----------------------------
 
-        # ------------------------------------------
-        # Skills
-        # ------------------------------------------
+skills = extract_skills_section(text)
 
-        candidate["skills"] = extract_skills_section(text)
-        candidate["skills"] = clean_skills(
-          candidate["skills"])
+# If no Skills section was found, scan the whole CV
+if not skills:
+    skills = detect_skills(text)
+
+candidate["skills"] = clean_skills(skills)
 
         candidate["summary"] = generate_summary(candidate)
 
