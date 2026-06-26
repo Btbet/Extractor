@@ -142,25 +142,43 @@ async def extract_cv(
 
         candidate["cv_hash"] = cv_hash
 
-# Count every upload in Supabase
-stats = supabase.table("stats").select(
-    "total_uploads"
-).eq(
-    "id",
-    1
-).single().execute()
+        # Count every upload in Supabase
+        stats = supabase.table(
+            "stats"
+        ).select(
+            "total_uploads"
+        ).eq(
+            "id",
+            1
+        ).execute()
 
-current_uploads = stats.data["total_uploads"]
+        if stats.data:
 
-supabase.table("stats").update(
-    {
-        "total_uploads": current_uploads + 1
-    }
-).eq(
-    "id",
-    1
-).execute()
-        # Check duplicate from Supabase
+            current_uploads = stats.data[0]["total_uploads"]
+
+            supabase.table(
+                "stats"
+            ).update(
+                {
+                    "total_uploads": current_uploads + 1
+                }
+            ).eq(
+                "id",
+                1
+            ).execute()
+
+        else:
+
+            supabase.table(
+                "stats"
+            ).insert(
+                {
+                    "id": 1,
+                    "total_uploads": 1
+                }
+            ).execute()
+
+        # Check for duplicate candidate
         duplicate = False
 
         response = supabase.table(
@@ -184,13 +202,17 @@ supabase.table("stats").update(
                     == candidate["cv_hash"]
                 )
             ):
+
                 duplicate = True
+
                 break
 
-        # Save to Supabase only if not duplicate
+        # Save if not duplicate
         if not duplicate:
 
-            supabase.table("candidates").insert({
+            supabase.table(
+                "candidates"
+            ).insert({
 
                 "name": candidate.get("name"),
 
@@ -202,7 +224,9 @@ supabase.table("stats").update(
 
                 "education": candidate.get("education"),
 
-                "years_experience": candidate.get("years_experience"),
+                "years_experience": candidate.get(
+                    "years_experience"
+                ),
 
                 "score": candidate.get("score"),
 
@@ -221,7 +245,6 @@ supabase.table("stats").update(
         return {
             "error": str(e)
         }
-
 
 @app.post("/upload-multiple")
 async def upload_multiple(
