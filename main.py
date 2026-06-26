@@ -260,13 +260,11 @@ async def extract_cv(
         # ------------------------------------------
         # Read text
         # ------------------------------------------
-
         text = await extract_text_from_file(file)
 
         # ------------------------------------------
         # Count every upload
         # ------------------------------------------
-
         stats = (
             supabase.table("stats")
             .select("total_uploads")
@@ -280,10 +278,7 @@ async def extract_cv(
 
             supabase.table("stats").update({
                 "total_uploads": current_uploads + 1
-            }).eq(
-                "id",
-                1
-            ).execute()
+            }).eq("id", 1).execute()
 
         else:
 
@@ -295,64 +290,53 @@ async def extract_cv(
         # ------------------------------------------
         # Validate document
         # ------------------------------------------
-
         text_lower = text.lower()
 
         checks = [
-
             "experience" in text_lower,
-
             "education" in text_lower,
-
             "skill" in text_lower,
-
             "@" in text
-
         ]
 
         if sum(checks) < 3:
 
             return {
-
                 "status": "rejected",
-
                 "message": "Invalid CV"
-
             }
 
         # ------------------------------------------
         # Extract candidate
         # ------------------------------------------
-
         candidate = extract_cv_data(text)
 
         # ------------------------------------------
         # Always store education as an array
         # ------------------------------------------
-
         education = candidate.get("education", [])
 
         if isinstance(education, str):
-
             education = [education]
-
         elif education is None:
-
             education = []
 
         candidate["education"] = education
-    # ----------------------------
-# Skills
-# ----------------------------
 
-skills = extract_skills_section(text)
+        # ------------------------------------------
+        # Skills
+        # ------------------------------------------
+        skills = extract_skills_section(text)
 
-# If no Skills section was found, scan the whole CV
-if not skills:
-    skills = detect_skills(text)
+        # If no Skills section was found, scan the whole CV
+        if not skills:
+            skills = detect_skills(text)
 
-candidate["skills"] = clean_skills(skills)
+        candidate["skills"] = clean_skills(skills)
 
+        # ------------------------------------------
+        # Summary
+        # ------------------------------------------
         candidate["summary"] = generate_summary(candidate)
 
         cv_hash = hashlib.sha256(
@@ -364,7 +348,6 @@ candidate["skills"] = clean_skills(skills)
         # ------------------------------------------
         # Check duplicate
         # ------------------------------------------
-
         response = (
             supabase.table("candidates")
             .select("*")
@@ -374,57 +357,39 @@ candidate["skills"] = clean_skills(skills)
         for c in response.data:
 
             if (
-
                 (
                     c.get("email")
                     and candidate.get("email")
                     and c["email"].lower()
                     == candidate["email"].lower()
                 )
-
                 or
-
                 (
                     c.get("cv_hash")
                     and candidate.get("cv_hash")
                     and c["cv_hash"]
                     == candidate["cv_hash"]
                 )
-
             ):
 
                 return {
-
                     "status": "duplicate",
-
                     "message": "Duplicate CV"
-
                 }
 
         # ------------------------------------------
         # Save candidate
         # ------------------------------------------
-
         supabase.table("candidates").insert({
 
             "name": candidate.get("name"),
-
             "email": candidate.get("email"),
-
             "phone": candidate.get("phone"),
-
             "skills": candidate.get("skills"),
-
             "education": candidate.get("education"),
-
-            "years_experience": candidate.get(
-                "years_experience"
-            ),
-
+            "years_experience": candidate.get("years_experience"),
             "score": candidate.get("score"),
-
             "summary": candidate.get("summary"),
-
             "cv_hash": candidate.get("cv_hash")
 
         }).execute()
@@ -432,17 +397,12 @@ candidate["skills"] = clean_skills(skills)
         # ------------------------------------------
         # Success
         # ------------------------------------------
-
         return {
 
             "status": "success",
-
             "message": "CV Uploaded Successfully",
-
             "name": candidate.get("name"),
-
             "email": candidate.get("email"),
-
             "candidate": candidate
 
         }
@@ -452,11 +412,8 @@ candidate["skills"] = clean_skills(skills)
         print(f"Upload error: {e}")
 
         return {
-
             "status": "failed"
-
         }
-
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
