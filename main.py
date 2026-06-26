@@ -142,19 +142,24 @@ async def extract_cv(
 
         candidate["cv_hash"] = cv_hash
 
-        # Count every upload
-        with open(STATS_FILE, "r") as f:
-            stats = json.load(f)
+# Count every upload in Supabase
+stats = supabase.table("stats").select(
+    "total_uploads"
+).eq(
+    "id",
+    1
+).single().execute()
 
-        stats["total_uploads"] += 1
+current_uploads = stats.data["total_uploads"]
 
-        with open(STATS_FILE, "w") as f:
-            json.dump(
-                stats,
-                f,
-                indent=4
-            )
-
+supabase.table("stats").update(
+    {
+        "total_uploads": current_uploads + 1
+    }
+).eq(
+    "id",
+    1
+).execute()
         # Check duplicate from Supabase
         duplicate = False
 
@@ -242,18 +247,24 @@ async def upload_multiple(
 
             candidate["cv_hash"] = cv_hash
 
-            # Count every uploaded file
-            with open(STATS_FILE, "r") as f:
-                stats = json.load(f)
+            # Count every upload in Supabase
+stats = supabase.table("stats").select(
+    "total_uploads"
+).eq(
+    "id",
+    1
+).single().execute()
 
-            stats["total_uploads"] += 1
+current_uploads = stats.data["total_uploads"]
 
-            with open(STATS_FILE, "w") as f:
-                json.dump(
-                    stats,
-                    f,
-                    indent=4
-                )
+supabase.table("stats").update(
+    {
+        "total_uploads": current_uploads + 1
+    }
+).eq(
+    "id",
+    1
+).execute()
 
             # Check duplicate in Supabase
             duplicate = False
