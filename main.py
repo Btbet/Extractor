@@ -622,7 +622,7 @@ def export_csv():
         ws.append([
 
             c.get(
-                "candidate_name",
+                "name",
                 ""
             ),
 
