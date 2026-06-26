@@ -152,8 +152,7 @@ async function uploadSingle(){
         return;
     }
 
-    let form =
-        new FormData();
+    let form = new FormData();
 
     form.append(
         "file",
@@ -174,8 +173,48 @@ async function uploadSingle(){
         let data =
             await response.json();
 
-        // Validation failed
-        if(data.error){
+        if(data.status === "success"){
+
+            let c = data.candidate;
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = `
+                <p style="
+                    color:green;
+                    font-weight:bold;
+                    margin-bottom:10px;
+                ">
+                ✅ CV Uploaded Successfully
+                </p>
+
+                <h3>${c.name || ""}</h3>
+
+                <p>${c.email || ""}</p>
+            `;
+
+            loadStats();
+
+            loadCandidates();
+
+        }
+
+        else if(data.status === "duplicate"){
+
+            document.getElementById(
+                "singleResult"
+            ).innerHTML = `
+                <p style="
+                    color:orange;
+                    font-weight:bold;
+                ">
+                ⚠ Duplicate CV detected
+                </p>
+            `;
+
+        }
+
+        else if(data.status === "rejected"){
 
             document.getElementById(
                 "singleResult"
@@ -184,72 +223,11 @@ async function uploadSingle(){
                     color:red;
                     font-weight:bold;
                 ">
-                ❌ ${data.error}
+                ❌ Invalid CV or Resume
                 </p>
             `;
 
-            fileInput.value = "";
-
-            setTimeout(() => {
-
-                document.getElementById(
-                    "singleResult"
-                ).innerHTML = "";
-
-            }, 5000);
-
-            return;
         }
-
-        // Upload successful
-        document.getElementById(
-            "singleResult"
-        ).innerHTML = `
-
-        <p style="
-            color:green;
-            font-weight:bold;
-            margin-bottom:10px;
-        ">
-        ✅ CV Uploaded Successfully
-        </p>
-
-        <h3>${data.name || ""}</h3>
-
-        <p>${data.email || ""}</p>
-
-        `;
-
-        fileInput.value = "";
-
-        loadStats();
-
-        loadCandidates();
-
-        setTimeout(() => {
-
-            document.getElementById(
-                "singleResult"
-            ).innerHTML = "";
-
-        }, 6000);
-
-    }
-
-    catch(err){
-
-        console.log(err);
-
-        document.getElementById(
-            "singleResult"
-        ).innerHTML = `
-            <p style="
-                color:red;
-                font-weight:bold;
-            ">
-            ❌ Upload Failed
-            </p>
-        `;
 
         fileInput.value = "";
 
@@ -262,6 +240,15 @@ async function uploadSingle(){
         }, 5000);
 
     }
+
+    catch(err){
+
+        console.log(err);
+
+        fileInput.value = "";
+
+    }
+
 }
 function addCV(){
 
@@ -354,7 +341,7 @@ function removeCV(index){
 }
 async function uploadMultiple(){
 
-    if(selectedCVs.length===0){
+    if(selectedCVs.length === 0){
 
         document.getElementById(
             "selectedFiles"
@@ -371,8 +358,7 @@ async function uploadMultiple(){
         return;
     }
 
-    let form =
-        new FormData();
+    let form = new FormData();
 
     selectedCVs.forEach(file => {
 
@@ -397,6 +383,23 @@ async function uploadMultiple(){
         let data =
             await response.json();
 
+        if(!response.ok){
+
+            document.getElementById(
+                "selectedFiles"
+            ).innerHTML = `
+            <p style="
+                color:red;
+                font-weight:bold;
+                padding:10px;
+            ">
+            ❌ Upload Failed
+            </p>
+            `;
+
+            return;
+        }
+
         document.getElementById(
             "selectedFiles"
         ).innerHTML = `
@@ -406,6 +409,11 @@ async function uploadMultiple(){
             padding:10px;
         ">
         ✅ ${data.count} CV(s) uploaded successfully
+        </p>
+
+        <p>
+            Uploaded: ${data.uploaded.length}<br>
+            Skipped: ${data.skipped.length}
         </p>
         `;
 
@@ -418,9 +426,9 @@ async function uploadMultiple(){
         ).value = "";
 
         loadStats();
+
         loadCandidates();
 
-        // Remove success message after 3 seconds
         setTimeout(() => {
 
             document.getElementById(
@@ -446,6 +454,15 @@ async function uploadMultiple(){
         ❌ Upload Failed
         </p>
         `;
+
+        setTimeout(() => {
+
+            document.getElementById(
+                "selectedFiles"
+            ).innerHTML = "";
+
+        }, 5000);
+
     }
 }
 
