@@ -24,7 +24,7 @@ supabase = create_client(
     SUPABASE_KEY
 )
 print("SUPABASE_URL:", SUPABASE_URL)
-print("SUPABASE_KEY exists:", SUPABASE_KEY is not None)
+print("SUPABASE_ANON_KEY exists:", SUPABASE_ANON_KEY is not None)
 from matcher import (
     extract_job_skills,
     calculate_match_score,
