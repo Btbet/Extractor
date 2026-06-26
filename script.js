@@ -570,6 +570,7 @@ if (currentPage > 1) {
 }
 
 function viewCandidate(index){
+    alert("View clicked");
 
     const c = currentCandidates[index];
 
