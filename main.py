@@ -152,13 +152,70 @@ async def extract_cv(
 ):
     try:
 
+        # Read text
         text = await extract_text_from_file(file)
 
-        candidate = extract_cv_data(text)
-        candidate["skills"] = detect_skills(text)
-        candidate["summary"] = generate_summary(candidate)
+        # --------------------------------------------------
+        # Count every upload
+        # --------------------------------------------------
 
-        # Clean extracted skills
+        stats = (
+            supabase.table("stats")
+            .select("total_uploads")
+            .eq("id", 1)
+            .execute()
+        )
+
+        if stats.data:
+
+            current_uploads = stats.data[0]["total_uploads"]
+
+            supabase.table("stats").update({
+                "total_uploads": current_uploads + 1
+            }).eq(
+                "id",
+                1
+            ).execute()
+
+        else:
+
+            supabase.table("stats").insert({
+                "id": 1,
+                "total_uploads": 1
+            }).execute()
+
+        # --------------------------------------------------
+        # Validate document
+        # --------------------------------------------------
+
+        text_lower = text.lower()
+
+        checks = [
+
+            "experience" in text_lower,
+
+            "education" in text_lower,
+
+            "skill" in text_lower,
+
+            "@" in text
+
+        ]
+
+        if sum(checks) < 3:
+
+            return {
+                "error": "This file does not appear to be a valid CV or resume."
+            }
+
+        # --------------------------------------------------
+        # Extract candidate
+        # --------------------------------------------------
+
+        candidate = extract_cv_data(text)
+
+        candidate["skills"] = detect_skills(text)
+
         candidate["skills"] = clean_skills(
             candidate.get("skills", [])
         )
@@ -171,37 +228,10 @@ async def extract_cv(
 
         candidate["cv_hash"] = cv_hash
 
-        # Count every upload
-        stats = (
-            supabase.table("stats")
-            .select("total_uploads")
-            .eq("id", 1)
-            .execute()
-        )
-
-        if stats.data:
-
-            current_uploads = stats.data[0]["total_uploads"]
-
-            supabase.table("stats").update(
-                {
-                    "total_uploads": current_uploads + 1
-                }
-            ).eq(
-                "id",
-                1
-            ).execute()
-
-        else:
-
-            supabase.table("stats").insert(
-                {
-                    "id": 1,
-                    "total_uploads": 1
-                }
-            ).execute()
-
+        # --------------------------------------------------
         # Check duplicate
+        # --------------------------------------------------
+
         duplicate = False
 
         response = (
@@ -213,25 +243,32 @@ async def extract_cv(
         for c in response.data:
 
             if (
+
                 (
                     c.get("email")
                     and candidate.get("email")
                     and c["email"].lower()
                     == candidate["email"].lower()
                 )
+
                 or
+
                 (
                     c.get("cv_hash")
                     and candidate.get("cv_hash")
                     and c["cv_hash"]
                     == candidate["cv_hash"]
                 )
+
             ):
 
                 duplicate = True
                 break
 
-        # Save only if not duplicate
+        # --------------------------------------------------
+        # Save only if unique
+        # --------------------------------------------------
+
         if not duplicate:
 
             supabase.table("candidates").insert({
@@ -267,7 +304,6 @@ async def extract_cv(
         return {
             "error": str(e)
         }
-
 @app.post("/upload-multiple")
 async def upload_multiple(
     files: List[UploadFile] = File(...)
@@ -280,10 +316,68 @@ async def upload_multiple(
 
         try:
 
+            # ------------------------------------------
+            # Read file
+            # ------------------------------------------
+
             text = await extract_text_from_file(file)
 
+            # ------------------------------------------
+            # Count every upload
+            # ------------------------------------------
+
+            stats = (
+                supabase.table("stats")
+                .select("total_uploads")
+                .eq("id", 1)
+                .single()
+                .execute()
+            )
+
+            current_uploads = stats.data["total_uploads"]
+
+            supabase.table("stats").update({
+                "total_uploads": current_uploads + 1
+            }).eq(
+                "id",
+                1
+            ).execute()
+
+            # ------------------------------------------
+            # Validate document
+            # ------------------------------------------
+
+            text_lower = text.lower()
+
+            checks = [
+
+                "experience" in text_lower,
+
+                "education" in text_lower,
+
+                "skill" in text_lower,
+
+                "@" in text
+
+            ]
+
+            if sum(checks) < 3:
+
+                skipped.append(file.filename)
+
+                continue
+
+            # ------------------------------------------
+            # Extract candidate
+            # ------------------------------------------
+
             candidate = extract_cv_data(text)
+
             candidate["skills"] = detect_skills(text)
+
+            candidate["skills"] = clean_skills(
+                candidate.get("skills", [])
+            )
 
             candidate["summary"] = generate_summary(candidate)
 
@@ -293,89 +387,72 @@ async def upload_multiple(
 
             candidate["cv_hash"] = cv_hash
 
-            # Count every upload in Supabase
-            stats = supabase.table(
-                "stats"
-            ).select(
-                "total_uploads"
-            ).eq(
-                "id",
-                1
-            ).single().execute()
+            # ------------------------------------------
+            # Check duplicate
+            # ------------------------------------------
 
-            current_uploads = stats.data["total_uploads"]
-
-            supabase.table(
-                "stats"
-            ).update(
-                {
-                    "total_uploads": current_uploads + 1
-                }
-            ).eq(
-                "id",
-                1
-            ).execute()
-
-            # Check duplicate in Supabase
             duplicate = False
 
-            response = supabase.table(
-                "candidates"
-            ).select("*").execute()
+            response = (
+                supabase.table("candidates")
+                .select("*")
+                .execute()
+            )
 
             for c in response.data:
 
                 if (
+
                     (
                         c.get("email")
                         and candidate.get("email")
                         and c["email"].lower()
                         == candidate["email"].lower()
                     )
+
                     or
+
                     (
                         c.get("cv_hash")
                         and candidate.get("cv_hash")
                         and c["cv_hash"]
                         == candidate["cv_hash"]
                     )
+
                 ):
 
                     duplicate = True
                     break
 
-            # Save to Supabase only if not duplicate
+            # ------------------------------------------
+            # Save only if unique
+            # ------------------------------------------
+
             if not duplicate:
 
-                try:
+                supabase.table("candidates").insert({
 
-                    supabase.table(
-                        "candidates"
-                    ).insert({
+                    "name": candidate.get("name"),
 
-                        "name": candidate.get("name"),
+                    "email": candidate.get("email"),
 
-                        "email": candidate.get("email"),
+                    "phone": candidate.get("phone"),
 
-                        "phone": candidate.get("phone"),
+                    "skills": candidate.get("skills"),
 
-                        "skills": candidate.get("skills"),
+                    "education": candidate.get("education"),
 
-                        "education": candidate.get("education"),
+                    "years_experience": candidate.get(
+                        "years_experience"
+                    ),
 
-                        "years_experience": candidate.get("years_experience"),
+                    "score": candidate.get("score"),
 
-                        "score": candidate.get("score"),
+                    "summary": candidate.get("summary"),
 
-                        "summary": candidate.get("summary"),
+                    "cv_hash": candidate.get("cv_hash")
 
-                        "cv_hash": candidate.get("cv_hash")
-
-                    }).execute()
-
-                except Exception as e:
-
-                    print(f"Supabase insert error: {e}")
+                }).execute()
 
             uploaded.append(file.filename)
 
