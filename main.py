@@ -15,6 +15,8 @@ from reportlab.lib import styles
 from openpyxl import Workbook
 from supabase import create_client
 import os
+import re
+from skills_db import TECHNICAL_SKILLS
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -29,6 +31,24 @@ from matcher import (
     calculate_match_score,
     generate_summary
 )
+
+
+
+def detect_skills(text):
+
+    found = []
+
+    text = text.lower()
+
+    for skill in TECHNICAL_SKILLS:
+
+        pattern = r"\b" + re.escape(skill.lower()) + r"\b"
+
+        if re.search(pattern, text):
+
+            found.append(skill)
+
+    return sorted(list(set(found)))
 
 app = FastAPI()
 candidates_db = []
@@ -133,6 +153,7 @@ async def extract_cv(
         text = await extract_text_from_file(file)
 
         candidate = extract_cv_data(text)
+        candidate["skills"] = detect_skills(text)
 
         # Clean extracted skills
         candidate["skills"] = clean_skills(
@@ -259,6 +280,7 @@ async def upload_multiple(
             text = await extract_text_from_file(file)
 
             candidate = extract_cv_data(text)
+            candidate["skills"] = detect_skills(text)
 
             candidate["summary"] = generate_summary(candidate)
 
